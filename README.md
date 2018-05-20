@@ -1,7 +1,7 @@
 # Calibração Espaço-Temporal de Previsões Numéricas do Modelo de Mesoescala Eta para a Velocidade do Vento em Minas Gerais.
 Disponível em http://www.pg.im.ufrj.br/teses/Estatistica/Mestrado/170.pdf.
 
-# RESUMO
+# Resumo
 
 Previsões de variáveis meteorológicas provenientes de modelos numéricos estão, sistematicamente, sujeitas à erros. 
 Tais erros, devem-se à tentativa de simular deterministicamente processos termodinâmicos da atmosfera a partir de suas 
