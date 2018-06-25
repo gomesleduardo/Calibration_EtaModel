@@ -48,29 +48,25 @@ rm(i,pacotes)
 definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                forecast.hour, # hora da previsao maxima
                                horizon, # horizonte
-                               lag.hours, # tamanho do periodo de treinamento (janela passada)
-                               qgrid.new) #qtd de novas localizacoes
-  
+                               lag.hours) # tamanho do periodo de treinamento (janela passada)
 {
   #------ Contador de tempo ------#
   a <- Sys.time()
   
   #---------------------------------------- LENDO DADOS ------------------------------------------
   obs.windCE <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/velvento85m_aerogeradores_parajuru_20170101_20171231.csv")
-  obs.windCE <- data.frame(data.hora = strptime(paste0(substr(obs.windCE$data,7,10),"-",
-                                                       substr(obs.windCE$data,4,5),"-",
-                                                       substr(obs.windCE$data,1,2)," ",
-                                                       obs.windCE$hora,":01"),
-                                                format = "%Y-%m-%d %H:%M:%S",
-                                                tz = "GMT"),
-                           obs.windCE[,-(1:2)])
+  obs.windCE <- data.frame(data.hora = as.character(strptime(paste0(substr(obs.windCE$data,7,10),"-",
+                                                                    substr(obs.windCE$data,4,5),"-",
+                                                                    substr(obs.windCE$data,1,2)," ",
+                                                                           obs.windCE$hora,":01"),
+                                                             format = "%Y-%m-%d %H:%M:%S",
+                                                             tz = "GMT")),
+                                                    obs.windCE[,-(1:2)])
   obs.windCE <- subset(obs.windCE,
                        substr(obs.windCE$data.hora,15,16)=="00" |
                        substr(obs.windCE$data.hora,15,16)=="30")
-  
-  
   obs.windtorreCE <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/dados_torre_energimp_parajuru_30min_20170101_20171231.csv")
-  obs.windtorreCE <- data.frame(data.hora = strptime(paste0(as.character(obs.windtorreCE$data)," ",
+  obs.windtorreCE <- data.frame(data.hora = as.character(strptime(paste0(as.character(obs.windtorreCE$data)," ",
                                                             ifelse(nchar(obs.windtorreCE$hora)==2,
                                                                    obs.windtorreCE$hora,
                                                                    paste0("0",obs.windtorreCE$hora)),":",
@@ -79,160 +75,146 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                                                    paste0("0",obs.windtorreCE$minutos)),
                                                             ":01"),
                                                      format = "%Y-%m-%d %H:%M:%S",
-                                                     tz = "GMT"),
+                                                     tz = "GMT")),
                                 torre = obs.windtorreCE$vel85)
-  
   obs.windCE <- merge(x = obs.windCE,y = obs.windtorreCE,by = "data.hora",all = TRUE)
   rm(obs.windtorreCE)
-  
-  
-  # remover as localizacoes que nao tem obs
-  # manter somente:
-  # "data.hora" "AG01"      "AG02"      "AG05"      "AG06"      "AG09"     
-  # "AG11"      "AG12"      "AG13"      "AG14"      "AG15"      "AG16"     
-  # "AG17"      "AG18"      "torre"
-  
-  
+  obs.windCE$data.hora <- as.character(obs.windCE$data.hora)
   coords.windfarm <- read.csv2("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/coords_parque_praias_de_parajuru_energimp.csv")
   coords.windfarm[,1] <- as.character(coords.windfarm[,1])
   coords.windfarm[,2] <- as.numeric(as.character(coords.windfarm[,2]))
   coords.windfarm[,3] <- as.numeric(as.character(coords.windfarm[,3]))
   names(coords.windfarm)[2:3] <- tolower(names(coords.windfarm)[2:3])
+  locat.aux <- NULL
+  for (l in 2:length(names(obs.windCE)))
+  {
+    locat.aux <- c(locat.aux,
+                   which(coords.windfarm$AG==names(obs.windCE)[l]))
+  }
+  coords.windfarm <- coords.windfarm[locat.aux,]
+  rm(locat.aux,l)
   coords.ETACE <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/coords_Eta5km_operacional_CE.csv")
-  
   prevnumext <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/previsoes_numericas_parajuru_20170102_20171229.csv")
+  prevnumext$runtime1 <- strptime(paste0(substr(as.character(prevnumext$runtime1),1,4),"-",
+                                         substr(as.character(prevnumext$runtime1),5,6),"-",
+                                         substr(as.character(prevnumext$runtime1),7,8)," ",
+                                         substr(as.character(prevnumext$runtime1),9,10),":",
+                                         substr(as.character(prevnumext$runtime1),11,12),":01"),
+                                  format = "%Y-%m-%d %H:%M:%S",
+                                  tz = "GMT")
+  prevnumext$prevtime1 <- strptime(paste0(substr(as.character(prevnumext$prevtime1),1,4),"-",
+                                         substr(as.character(prevnumext$prevtime1),5,6),"-",
+                                         substr(as.character(prevnumext$prevtime1),7,8)," ",
+                                         substr(as.character(prevnumext$prevtime1),9,10),":",
+                                         substr(as.character(prevnumext$prevtime1),11,12),":01"),
+                                  format = "%Y-%m-%d %H:%M:%S",
+                                  tz = "GMT")
   
+  prevnumext <- data.frame(runtime1 = prevnumext$runtime1,
+                           prevtime1 = prevnumext$prevtime1,
+                           horizonte = as.numeric((prevnumext$prevtime1-prevnumext$runtime1)/60/60),
+                           prevnumext[,-(1:2)])
   
-  
-  
-  
-  
-  coords.ETA <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Coordenadas_MG/coords_altitude_z0_Eta15km_MG.csv")
-  for (l in 2:5){coords.ETA[,l] <- as.numeric(as.character(coords.ETA[,l]))}
-  coords.stations <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Dados_Observados/info104_inmet_MG_e_limites_ALTERADO59.csv")
-  obs.wind <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Dados_Observados/velvento104_imput_20151001_20170930 - ALTERADO59.csv")
-  ID.zeta <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Dados_Observados/ID_zeta_10_144_inmet_auto_20151001_20170930 - ALTERADO59.csv")
-  ID.zeta$data.hora <- strptime(paste0(substr(ID.zeta$data.hora,7,10),"-",
-                                       substr(ID.zeta$data.hora,4,5),"-",
-                                       substr(ID.zeta$data.hora,1,2),
-                                       substr(ID.zeta$data.hora,11,16),":01"),
-                                format = "%Y-%m-%d %H:%M:%S",
-                                tz = "GMT")
-  L.class <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Dados_Observados/L_class_144_inmet_auto_20151001_20170930 - ALTERADO59.csv")
-  L.class$data.hora <- strptime(paste0(substr(L.class$data.hora,7,10),"-",
-                                       substr(L.class$data.hora,4,5),"-",
-                                       substr(L.class$data.hora,1,2),
-                                       substr(L.class$data.hora,11,16),":01"),
-                                format = "%Y-%m-%d %H:%M:%S",
-                                tz = "GMT")
-  z0 <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Dados_Observados/z0_mes_144_inmet_auto_20151001_20170930 - ALTERADO59.csv")
-  z0$data.hora <- strptime(paste0(substr(z0$data.hora,7,10),"-",
-                                       substr(z0$data.hora,4,5),"-",
-                                       substr(z0$data.hora,1,2),
-                                       substr(z0$data.hora,11,16),":01"),
-                                format = "%Y-%m-%d %H:%M:%S",
-                                tz = "GMT")
-  
-  #------ Removendo a defasagem na data ------#
-  aux.forecast.date <- as.Date(forecast.date-2*(horizon/24))
+  prevnumext$runtime1 <- as.character(prevnumext$runtime1)
+  prevnumext$prevtime1 <- as.character(prevnumext$prevtime1)
   
   #------ Periodo de treinamento ------#
-  train.period <- as.character(seq(strptime(paste0(aux.forecast.date," ",
+  train.period <- as.character(seq(strptime(paste0(forecast.date," ",
                                                    forecast.hour,":00:01"),
                                             format = "%Y-%m-%d %H:%M:%S",
-                                            tz = "GMT")-60*60*(lag.hours-1),
-                                   strptime(paste0(aux.forecast.date," ",
+                                            tz = "GMT")-(horizon-24)*60*60-30*60-(lag.hours-1)*30*60,
+                                   strptime(paste0(forecast.date," ",
                                                    forecast.hour,":00:01"),
                                             format = "%Y-%m-%d %H:%M:%S",
-                                            tz = "GMT"),60*60))
-  
-  #------ Recuperando as informacoes nos arquivos .csv ------#
-  #----------------------------------------------------------------------------------------------
-  # VELOCIDADE DO VENTO - 10 m
-  #----------------------------------------------------------------------------------------------
-  wind10m.ETA <- data.frame(NULL)
-  aux.date <- seq(as.Date(head(unique(substr(train.period,1,10)),n=1))-9,
-                  as.Date(tail(unique(substr(train.period,1,10)),n=1)), by = "1 day")
-  
-  #------ Removendo dias que nao houve funcionamento do Eta ------#
-  aux.date.rm <- NULL
-  if (sum(aux.date < as.Date("2015-10-11"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date < as.Date("2015-10-11")))
-  if (sum(aux.date > as.Date("2017-09-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date > as.Date("2017-09-28")))
-  if (sum(aux.date == as.Date("2015-11-09"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-11-09")))
-  if (sum(aux.date == as.Date("2015-12-08"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-08")))
-  if (sum(aux.date == as.Date("2015-12-25"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-25")))
-  if (sum(aux.date == as.Date("2016-01-10"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-01-10")))
-  if (sum(aux.date == as.Date("2016-03-21"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-03-21")))
-  if (sum(aux.date == as.Date("2016-08-07"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-08-07")))
-  if (sum(aux.date == as.Date("2017-01-02"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-01-02")))
-  if (sum(aux.date == as.Date("2017-02-05"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-02-05")))
-  if (sum(aux.date == as.Date("2017-03-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-03-28")))
-  if (sum(aux.date == as.Date("2017-09-13"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-09-13")))
-  if (length(aux.date.rm)>0) aux.date <- aux.date[-aux.date.rm]
-  
-  for (i in 1:length(aux.date))
-  {
-    print(paste0(i,"/",length(aux.date)))
-    #------ lendo .csv auxiliar ------#
-    aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/velvento10m/",
-                               "velvento10m_Eta15km_MG_",
-                               substr(aux.date[i],1,4),
-                               substr(aux.date[i],6,7),
-                               substr(aux.date[i],9,10),
-                               "12.csv"))
+                                            tz = "GMT")-(horizon-24)*60*60-30*60,30*60))
     
-    #------ organizando dia/hora origem ------#
-    aux.csv[,1] <- as.character(strptime(paste0(substr(aux.csv[,1],1,4),"-",
-                                                substr(aux.csv[,1],5,6),"-",
-                                                substr(aux.csv[,1],7,8)," ",
-                                                substr(aux.csv[,1],9,10),":00:01"),
-                                         format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT"))
-    
-    #------ organizando dia/hora data de previsao ------#
-    aux.csv[,2] <- as.character(strptime(paste0(substr(aux.csv[,2],1,4),"-",
-                                                substr(aux.csv[,2],5,6),"-",
-                                                substr(aux.csv[,2],7,8)," ",
-                                                substr(aux.csv[,2],9,10),":00:01"),
-                                         format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT"))
-    
-    #------ criando a variavel "horizonte" ------#
-    aux.csv <- data.frame(aux.csv[,1:2],
-                          horizonte = as.numeric(difftime(time1 = strptime(aux.csv[,2], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
-                                                          time2 = strptime(aux.csv[,1], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
-                                                          tz = "GMT", units = "hours")),
-                          aux.csv[,-(1:2)])
-    
-    #------ mantendo apenas o horario desejado e o horizonte de interesse ------#
-    aux.csv <- subset(aux.csv,aux.csv$horizonte >= horizon)
-    
-    #------ interpolando para as estacoes (interpolacao bilinear) ------#
-    for (l in 1:dim(aux.csv)[1])
-    {
-      wind10m.ETA <- rbind(wind10m.ETA,data.frame(t(c(as.character(aux.csv[l,1:3]),
-                                                      suppressWarnings(interpp(x = coords.ETA$longitude,
-                                                                               y = coords.ETA$latitude,
-                                                                               z = as.numeric(aux.csv[l,-(1:3)]),
-                                                                               xo = coords.stations$longitude,
-                                                                               yo = coords.stations$latitude)$z)))))
-    }
-  }
-  
-  #------ formatando as variaveis ------#
-  wind10m.ETA[,1] <- as.character(wind10m.ETA[,1])
-  wind10m.ETA[,2] <- as.character(wind10m.ETA[,2])
-  for (i in 3:dim(wind10m.ETA)[2]){wind10m.ETA[,i] <- as.numeric(as.character(wind10m.ETA[,i]))}
-  
-  #------ nomeando as variaveis ------#
-  names(wind10m.ETA) <- c(names(aux.csv)[1:3],as.character(coords.stations$codigo))
+  # #------ Recuperando as informacoes nos arquivos .csv ------#
+  # #----------------------------------------------------------------------------------------------
+  # # VELOCIDADE DO VENTO - 10 m
+  # #----------------------------------------------------------------------------------------------
+  # wind10m.ETA <- data.frame(NULL)
+  # aux.date <- seq(as.Date(head(unique(substr(train.period,1,10)),n=1))-9,
+  #                 as.Date(tail(unique(substr(train.period,1,10)),n=1)), by = "1 day")
+  # 
+  # #------ Removendo dias que nao houve funcionamento do Eta ------#
+  # aux.date.rm <- NULL
+  # if (sum(aux.date < as.Date("2015-10-11"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date < as.Date("2015-10-11")))
+  # if (sum(aux.date > as.Date("2017-09-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date > as.Date("2017-09-28")))
+  # if (sum(aux.date == as.Date("2015-11-09"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-11-09")))
+  # if (sum(aux.date == as.Date("2015-12-08"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-08")))
+  # if (sum(aux.date == as.Date("2015-12-25"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-25")))
+  # if (sum(aux.date == as.Date("2016-01-10"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-01-10")))
+  # if (sum(aux.date == as.Date("2016-03-21"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-03-21")))
+  # if (sum(aux.date == as.Date("2016-08-07"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-08-07")))
+  # if (sum(aux.date == as.Date("2017-01-02"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-01-02")))
+  # if (sum(aux.date == as.Date("2017-02-05"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-02-05")))
+  # if (sum(aux.date == as.Date("2017-03-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-03-28")))
+  # if (sum(aux.date == as.Date("2017-09-13"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-09-13")))
+  # if (length(aux.date.rm)>0) aux.date <- aux.date[-aux.date.rm]
+  # 
+  # for (i in 1:length(aux.date))
+  # {
+  #   print(paste0(i,"/",length(aux.date)))
+  #   #------ lendo .csv auxiliar ------#
+  #   aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/velvento10m/",
+  #                              "velvento10m_Eta15km_MG_",
+  #                              substr(aux.date[i],1,4),
+  #                              substr(aux.date[i],6,7),
+  #                              substr(aux.date[i],9,10),
+  #                              "12.csv"))
+  #   
+  #   #------ organizando dia/hora origem ------#
+  #   aux.csv[,1] <- as.character(strptime(paste0(substr(aux.csv[,1],1,4),"-",
+  #                                               substr(aux.csv[,1],5,6),"-",
+  #                                               substr(aux.csv[,1],7,8)," ",
+  #                                               substr(aux.csv[,1],9,10),":00:01"),
+  #                                        format = "%Y-%m-%d %H:%M:%S",
+  #                                        tz = "GMT"))
+  #   
+  #   #------ organizando dia/hora data de previsao ------#
+  #   aux.csv[,2] <- as.character(strptime(paste0(substr(aux.csv[,2],1,4),"-",
+  #                                               substr(aux.csv[,2],5,6),"-",
+  #                                               substr(aux.csv[,2],7,8)," ",
+  #                                               substr(aux.csv[,2],9,10),":00:01"),
+  #                                        format = "%Y-%m-%d %H:%M:%S",
+  #                                        tz = "GMT"))
+  #   
+  #   #------ criando a variavel "horizonte" ------#
+  #   aux.csv <- data.frame(aux.csv[,1:2],
+  #                         horizonte = as.numeric(difftime(time1 = strptime(aux.csv[,2], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
+  #                                                         time2 = strptime(aux.csv[,1], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
+  #                                                         tz = "GMT", units = "hours")),
+  #                         aux.csv[,-(1:2)])
+  #   
+  #   #------ mantendo apenas o horario desejado e o horizonte de interesse ------#
+  #   aux.csv <- subset(aux.csv,aux.csv$horizonte >= horizon)
+  #   
+  #   #------ interpolando para as estacoes (interpolacao bilinear) ------#
+  #   for (l in 1:dim(aux.csv)[1])
+  #   {
+  #     wind10m.ETA <- rbind(wind10m.ETA,data.frame(t(c(as.character(aux.csv[l,1:3]),
+  #                                                     suppressWarnings(interpp(x = coords.ETA$longitude,
+  #                                                                              y = coords.ETA$latitude,
+  #                                                                              z = as.numeric(aux.csv[l,-(1:3)]),
+  #                                                                              xo = coords.stations$longitude,
+  #                                                                              yo = coords.stations$latitude)$z)))))
+  #   }
+  # }
+  # 
+  # #------ formatando as variaveis ------#
+  # wind10m.ETA[,1] <- as.character(wind10m.ETA[,1])
+  # wind10m.ETA[,2] <- as.character(wind10m.ETA[,2])
+  # for (i in 3:dim(wind10m.ETA)[2]){wind10m.ETA[,i] <- as.numeric(as.character(wind10m.ETA[,i]))}
+  # 
+  # #------ nomeando as variaveis ------#
+  # names(wind10m.ETA) <- c(names(aux.csv)[1:3],as.character(coords.stations$codigo))
   
   #------ Matriz de distancias D ------#
-  D <- as.matrix(dist(data.frame(coords.stations$longitude,coords.stations$latitude)))
+  D <- as.matrix(dist(data.frame(coords.windfarm$longitude,coords.windfarm$latitude)))
   D <- matrix(as.numeric(D),dim(D)[1],dim(D)[2])
   
   #------ Matriz de evolucao Gt ------#
-  Gt <- as.matrix(bdiag(diag(1,10),
+  Gt <- as.matrix(bdiag(diag(1,4),
                         matrix(c(cos(2*pi*1/24),-sin(2*pi*1/24),
                                  sin(2*pi*1/24),cos(2*pi*1/24)),2)))
   Gt <- matrix(as.numeric(Gt),dim(Gt)[1],dim(Gt)[2])
@@ -241,19 +223,11 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   #------ Comprimento do vetor Theta (Tendencia espacial + Sazonalidade) ------#
   r <- dim(Gt)[1]
   
-  train.period <- as.character(strptime(train.period,
-                                        format = "%Y-%m-%d %H:%M:%S",
-                                        tz = "GMT")+(horizon/24)*24*60*60)
-  train.period.rm <- NULL
-  if (sum(train.period < as.Date("2015-10-16"))>0) train.period.rm <- c( train.period.rm,which( train.period < as.Date("2015-10-16")))
-  if (sum(train.period > as.Date("2017-09-28"))>0) train.period.rm <- c(train.period.rm,which(train.period > as.Date("2017-09-28")))
-  if (length(train.period.rm)>0) train.period <- train.period[-train.period.rm]
-  
   #------ Total de tempos ------#
   T <- length(train.period)
   
   #------ Total de localizacoes ------#
-  n <-  dim(coords.stations)[1]
+  n <-  dim(coords.windfarm)[1]
   
   #------ Matriz de covariaveis Ft ------#
   #------ Valor observado ------#
@@ -261,123 +235,117 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   Ft <- array(NA,dim=c(r,n,T+1))
   for (t in 2:(T+1))
   {
-    Yt[,,t] <- as.numeric(subset(obs.wind, obs.wind$data.hora == train.period[t-1])[,-1])
+    Yt[,,t] <- as.numeric(subset(obs.windCE, obs.windCE$data.hora == train.period[t-1])[,-1])
     
     Ft[,,t] <- t(data.frame(level = 1,
-                            ensemble.mean = apply(subset(wind10m.ETA, 
-                                                         wind10m.ETA$data == train.period[t-1])[,-(1:3)],2,mean),
-                            z0 = as.numeric(subset(z0,z0$data.hora==train.period[t-1])[,-1]),
-                            L1 = ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==1,
-                                        1,0),
-                            L2 = ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==2,
-                                        1,0),
-                            L4 = ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==4,
-                                        1,0),
-                            L5 = ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==5,
-                                        1,0),
-                            alt = coords.stations$altitude,
-                            lat = coords.stations$latitude,
-                            long = coords.stations$longitude,
+                            # A restricao do horizonte de previsao nas previsoes passadas nao pode ser cumprida aqui
+                            # Nao ha previsao sab, dom e feriados. Assim, o jeito e usar sem restricao
+                            ensemble.mean = rep(as.numeric(apply(subset(prevnumext, 
+                                                                        prevnumext$prevtime1 == train.period[t-1],
+                                                                        "wind_speed"),2,mean)),n),
+                            lat = coords.windfarm$latitude,
+                            long = coords.windfarm$longitude,
                             saz1 = 1,
                             saz2 = 0))
   }
   
   #------ Periodo de previsao ------#
-  forecast.period <- as.character(seq(strptime(tail(train.period,n=1),
-                                               format = "%Y-%m-%d %H:%M:%S",
-                                               tz = "GMT")+60*60,
-                                      strptime(paste0(as.Date(forecast.date)," ",
+  forecast.period <- as.character(seq(strptime(paste0(forecast.date," ",
                                                       forecast.hour,":00:01"),
                                                format = "%Y-%m-%d %H:%M:%S",
-                                               tz = "GMT"),60*60))
+                                               tz = "GMT")-(horizon-24)*60*60,
+                                      strptime(paste0(forecast.date," ",
+                                                      forecast.hour,":00:01"),
+                                               format = "%Y-%m-%d %H:%M:%S",
+                                               tz = "GMT"),30*60))
   
-  #------ Recuperando as informacoes nos arquivos .csv ------#
-  
-  #----------------------------------------------------------------------------------------------
-  # VELOCIDADE DO VENTO - 10 m
-  #----------------------------------------------------------------------------------------------
-  
-  wind10m.ETA2 <- data.frame(NULL)
-  aux.date <- seq(as.Date(head(unique(substr(forecast.period,1,10)),n=1))-9,
-                  as.Date(tail(unique(substr(forecast.period,1,10)),n=1))-1, by = "1 day")
-  
-  #------ Removendo dias que nao houve funcionamento do Eta ------#
-  aux.date.rm <- NULL
-  if (sum(aux.date < as.Date("2015-10-11"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date < as.Date("2015-10-11")))
-  if (sum(aux.date > as.Date("2017-09-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date > as.Date("2017-09-28")))
-  if (sum(aux.date == as.Date("2015-11-09"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-11-09")))
-  if (sum(aux.date == as.Date("2015-12-08"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-08")))
-  if (sum(aux.date == as.Date("2015-12-25"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-25")))
-  if (sum(aux.date == as.Date("2016-01-10"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-01-10")))
-  if (sum(aux.date == as.Date("2016-03-21"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-03-21")))
-  if (sum(aux.date == as.Date("2017-01-02"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-01-02")))
-  if (sum(aux.date == as.Date("2017-02-05"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-02-05")))
-  if (sum(aux.date == as.Date("2017-03-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-03-28")))
-  if (sum(aux.date == as.Date("2017-09-13"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-09-13")))
-  if (length(aux.date.rm)>0) aux.date <- aux.date[-aux.date.rm]
-  
-  for (i in 1:length(aux.date))
-  {
-    print(paste0(i,"/",length(aux.date)))
-    #------ lendo .csv auxiliar
-    aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/velvento10m/",
-                               "velvento10m_Eta15km_MG_",
-                               substr(aux.date[i],1,4),
-                               substr(aux.date[i],6,7),
-                               substr(aux.date[i],9,10),
-                               "12.csv"))
-    
-    #------ organizando dia/hora origem ------#
-    aux.csv[,1] <- as.character(strptime(paste0(substr(aux.csv[,1],1,4),"-",
-                                                substr(aux.csv[,1],5,6),"-",
-                                                substr(aux.csv[,1],7,8)," ",
-                                                substr(aux.csv[,1],9,10),":00:01"),
-                                         format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT"))
-    
-    #------ organizando dia/hora data de previsao ------#
-    aux.csv[,2] <- as.character(strptime(paste0(substr(aux.csv[,2],1,4),"-",
-                                                substr(aux.csv[,2],5,6),"-",
-                                                substr(aux.csv[,2],7,8)," ",
-                                                substr(aux.csv[,2],9,10),":00:01"),
-                                         format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT"))
-    
-    #------ criando a variavel "horizonte" ------#
-    aux.csv <- data.frame(aux.csv[,1:2],
-                          horizonte = as.numeric(difftime(time1 = strptime(aux.csv[,2], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
-                                                          time2 = strptime(aux.csv[,1], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
-                                                          tz = "GMT", units = "hours")),
-                          aux.csv[,-(1:2)])
-    
-    #------ mantendo apenas o horario desejado e o horizonte de interesse ------#
-    aux.csv <- subset(aux.csv,aux.csv$horizonte >= horizon)
-    
-    #------ interpolando para as estacoes (interpolacao bilinear) ------#
-    for (l in 1:dim(aux.csv)[1])
-    {
-      wind10m.ETA2 <- rbind(wind10m.ETA2,data.frame(t(c(as.character(aux.csv[l,1:3]),
-                                                        suppressWarnings(interpp(x = coords.ETA$longitude,
-                                                                                 y = coords.ETA$latitude,
-                                                                                 z = as.numeric(aux.csv[l,-(1:3)]),
-                                                                                 xo = coords.stations$longitude,
-                                                                                 yo = coords.stations$latitude)$z),
-                                                        as.character(aux.csv[l,4:(qgrid.new+3)])))))
-    }
-  }
-  
-  #------ formatando as variaveis ------#
-  wind10m.ETA2[,1] <- as.character(wind10m.ETA2[,1])
-  wind10m.ETA2[,2] <- as.character(wind10m.ETA2[,2])
-  for (i in 3:dim(wind10m.ETA2)[2]){wind10m.ETA2[,i] <- as.numeric(as.character(wind10m.ETA2[,i]))}
-  
-  #------ nomeando as variaveis ------#
-  names(wind10m.ETA2) <- c(names(aux.csv)[1:3],as.character(coords.stations$codigo),as.character(coords.ETA$ID)[1:qgrid.new])
+  # #------ Recuperando as informacoes nos arquivos .csv ------#
+  # #----------------------------------------------------------------------------------------------
+  # # VELOCIDADE DO VENTO - 10 m
+  # #----------------------------------------------------------------------------------------------
+  # 
+  # wind10m.ETA2 <- data.frame(NULL)
+  # aux.date <- seq(as.Date(head(unique(substr(forecast.period,1,10)),n=1))-9,
+  #                 as.Date(tail(unique(substr(forecast.period,1,10)),n=1))-1, by = "1 day")
+  # 
+  # #------ Removendo dias que nao houve funcionamento do Eta ------#
+  # aux.date.rm <- NULL
+  # if (sum(aux.date < as.Date("2015-10-11"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date < as.Date("2015-10-11")))
+  # if (sum(aux.date > as.Date("2017-09-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date > as.Date("2017-09-28")))
+  # if (sum(aux.date == as.Date("2015-11-09"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-11-09")))
+  # if (sum(aux.date == as.Date("2015-12-08"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-08")))
+  # if (sum(aux.date == as.Date("2015-12-25"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2015-12-25")))
+  # if (sum(aux.date == as.Date("2016-01-10"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-01-10")))
+  # if (sum(aux.date == as.Date("2016-03-21"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2016-03-21")))
+  # if (sum(aux.date == as.Date("2017-01-02"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-01-02")))
+  # if (sum(aux.date == as.Date("2017-02-05"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-02-05")))
+  # if (sum(aux.date == as.Date("2017-03-28"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-03-28")))
+  # if (sum(aux.date == as.Date("2017-09-13"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date == as.Date("2017-09-13")))
+  # if (length(aux.date.rm)>0) aux.date <- aux.date[-aux.date.rm]
+  # 
+  # for (i in 1:length(aux.date))
+  # {
+  #   print(paste0(i,"/",length(aux.date)))
+  #   #------ lendo .csv auxiliar
+  #   aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/velvento10m/",
+  #                              "velvento10m_Eta15km_MG_",
+  #                              substr(aux.date[i],1,4),
+  #                              substr(aux.date[i],6,7),
+  #                              substr(aux.date[i],9,10),
+  #                              "12.csv"))
+  #   
+  #   #------ organizando dia/hora origem ------#
+  #   aux.csv[,1] <- as.character(strptime(paste0(substr(aux.csv[,1],1,4),"-",
+  #                                               substr(aux.csv[,1],5,6),"-",
+  #                                               substr(aux.csv[,1],7,8)," ",
+  #                                               substr(aux.csv[,1],9,10),":00:01"),
+  #                                        format = "%Y-%m-%d %H:%M:%S",
+  #                                        tz = "GMT"))
+  #   
+  #   #------ organizando dia/hora data de previsao ------#
+  #   aux.csv[,2] <- as.character(strptime(paste0(substr(aux.csv[,2],1,4),"-",
+  #                                               substr(aux.csv[,2],5,6),"-",
+  #                                               substr(aux.csv[,2],7,8)," ",
+  #                                               substr(aux.csv[,2],9,10),":00:01"),
+  #                                        format = "%Y-%m-%d %H:%M:%S",
+  #                                        tz = "GMT"))
+  #   
+  #   #------ criando a variavel "horizonte" ------#
+  #   aux.csv <- data.frame(aux.csv[,1:2],
+  #                         horizonte = as.numeric(difftime(time1 = strptime(aux.csv[,2], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
+  #                                                         time2 = strptime(aux.csv[,1], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
+  #                                                         tz = "GMT", units = "hours")),
+  #                         aux.csv[,-(1:2)])
+  #   
+  #   #------ mantendo apenas o horario desejado e o horizonte de interesse ------#
+  #   aux.csv <- subset(aux.csv,aux.csv$horizonte >= horizon)
+  #   
+  #   #------ interpolando para as estacoes (interpolacao bilinear) ------#
+  #   for (l in 1:dim(aux.csv)[1])
+  #   {
+  #     wind10m.ETA2 <- rbind(wind10m.ETA2,data.frame(t(c(as.character(aux.csv[l,1:3]),
+  #                                                       suppressWarnings(interpp(x = coords.ETA$longitude,
+  #                                                                                y = coords.ETA$latitude,
+  #                                                                                z = as.numeric(aux.csv[l,-(1:3)]),
+  #                                                                                xo = coords.stations$longitude,
+  #                                                                                yo = coords.stations$latitude)$z),
+  #                                                       as.character(aux.csv[l,4:(qgrid.new+3)])))))
+  #   }
+  # }
+  # 
+  # #------ formatando as variaveis ------#
+  # wind10m.ETA2[,1] <- as.character(wind10m.ETA2[,1])
+  # wind10m.ETA2[,2] <- as.character(wind10m.ETA2[,2])
+  # for (i in 3:dim(wind10m.ETA2)[2]){wind10m.ETA2[,i] <- as.numeric(as.character(wind10m.ETA2[,i]))}
+  # 
+  # #------ nomeando as variaveis ------#
+  # names(wind10m.ETA2) <- c(names(aux.csv)[1:3],as.character(coords.stations$codigo),as.character(coords.ETA$ID)[1:qgrid.new])
   
   #------ Matriz de distancias D ------#
-  D.new <- as.matrix(dist(data.frame(c(coords.stations$longitude,coords.ETA$longitude[1:qgrid.new]),
-                                     c(coords.stations$latitude,coords.ETA$latitude[1:qgrid.new]))))
-  D.new <- matrix(as.numeric(D.new),dim(D.new)[1],dim(D.new)[2])
+  # D.new <- as.matrix(dist(data.frame(c(coords.stations$longitude,coords.ETA$longitude[1:qgrid.new]),
+  #                                    c(coords.stations$latitude,coords.ETA$latitude[1:qgrid.new]))))
+  # D.new <- matrix(as.numeric(D.new),dim(D.new)[1],dim(D.new)[2])
+  D.new <- D
   
   #------ Total de localizacoes - Completo ------#
   n.new <-  dim(D.new)[1]
@@ -391,23 +359,16 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   Ft.new <- array(NA,dim=c(r,n.new,T.new+1))
   for (t in 2:(T.new+1))
   {
-    Yt.k[,,t] <- as.numeric(subset(obs.wind, obs.wind$data.hora == forecast.period[t-1])[,-1])
+    Yt.k[,,t] <- as.numeric(subset(obs.windCE, obs.windCE$data.hora == forecast.period[t-1])[,-1])
     
     Ft.new[,,t] <- t(data.frame(level = 1,
-                                ensemble.mean = apply(subset(wind10m.ETA2, 
-                                                             wind10m.ETA2$data == forecast.period[t-1])[,-(1:3)],2,mean),
-                                z0 = c(as.numeric(subset(z0,z0$data.hora==train.period[t-1])[,-1]),rep(1,qgrid.new)),
-                                L1 = c(ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==1,
-                                            1,0),rep(0,qgrid.new)),
-                                L2 = c(ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==2,
-                                            1,0),rep(0,qgrid.new)),
-                                L4 = c(ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==4,
-                                            1,0),rep(0,qgrid.new)),
-                                L5 = c(ifelse(as.numeric(subset(L.class,L.class$data.hora==train.period[t-1])[,-1])==5,
-                                            1,0),rep(0,qgrid.new)),
-                                alt = c(coords.stations$altitude,coords.ETA$altitude[1:qgrid.new]),
-                                lat = c(coords.stations$latitude,coords.ETA$latitude[1:qgrid.new]),
-                                long = c(coords.stations$longitude,coords.ETA$longitude[1:qgrid.new]),
+                                # A restricao do horizonte de previsao nas previsoes passadas nao pode ser cumprida aqui
+                                # Nao ha previsao sab, dom e feriados. Assim, o jeito e usar sem restricao
+                                ensemble.mean = rep(as.numeric(apply(subset(prevnumext, 
+                                                                            prevnumext$prevtime1 == forecast.period[t-1],
+                                                                            "wind_speed"),2,mean)),n),
+                                lat = coords.windfarm$latitude,
+                                long = coords.windfarm$longitude,
                                 saz1 = 1,
                                 saz2 = 0))
   }
@@ -418,14 +379,9 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                     D = as.matrix(D),
                     Ft.k = Ft.new,
                     D.full = as.matrix(D.new),
-                    relatorio = rbind(data.frame(codigo = coords.stations$codigo,
-                                                 longitude = coords.stations$longitude,
-                                                 latitude = coords.stations$latitude,
-                                                 altitude = coords.stations$altitude),
-                                      data.frame(codigo = coords.ETA$ID[1:qgrid.new],
-                                                 longitude = coords.ETA$longitude[1:qgrid.new],
-                                                 latitude = coords.ETA$latitude[1:qgrid.new],
-                                                 altitude = coords.ETA$altitude[1:qgrid.new])),
+                    relatorio = data.frame(codigo = coords.windfarm$AG,
+                                           longitude = coords.windfarm$longitude,
+                                           latitude = coords.windfarm$latitude),
                     forecast.period = forecast.period,
                     Yt.k = Yt.k)
   
@@ -459,6 +415,9 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
 {
   #------ Contador de tempo ------#
   a <- Sys.time()
+  
+  #------ Inputando valores ------#
+  Yt[which(is.na(Yt),arr.ind = TRUE)[-1,]] <- 1
   
   #---------------------#
   #------ Funcoes ------#
@@ -1166,24 +1125,21 @@ previsao.posteriori <- function(Ft.k,
 
 #-------------------------------------- FUNCOES - Rcpp ---------------------------------------
 
-Rcpp::sourceCpp("C:/Users/b207056565/Desktop/Calibration_EtaModel/Funcs_cpp/Funcs_DGOP.cpp")
+Rcpp::sourceCpp("C:/Users/ledua/Desktop/Calibration_EtaModel/Funcs_cpp/Funcs_DGOP.cpp")
 
 #----------------------------------------------------------------------------------------------
 # RESULTADOS
 #----------------------------------------------------------------------------------------------
 
-DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-12-01"),
+DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-12-04"),
                                  forecast.hour = 06,
                                  horizon = 96,
                                  lag.hours = 72)    
 
-RESULTADO <- MCMC(M = 2100,
+RESULTADO <- MCMC(M = 300,
                   burnin = 100,
                   salto = 30,
-                  Desc = c(.99,.99,.99,
-                           .99,.99,.99,
-                           .99,.99,.99,
-                           .99,
+                  Desc = c(.99,.99,.99,.99,
                            rep(.95,2)),
                   delta.sig2 = 1,
                   Yt = DEFINICOES$Yt,
