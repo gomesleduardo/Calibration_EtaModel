@@ -54,33 +54,33 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   a <- Sys.time()
   
   #---------------------------------------- LENDO DADOS ------------------------------------------
-  obs.windCE <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/velvento85m_aerogeradores_parajuru_20170101_20171231.csv")
+  obs.windCE <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/velvento85m_aerogeradores_parajuru_20170101_20171231.csv")
   obs.windCE <- data.frame(data.hora = as.character(strptime(paste0(substr(obs.windCE$data,7,10),"-",
                                                                     substr(obs.windCE$data,4,5),"-",
                                                                     substr(obs.windCE$data,1,2)," ",
-                                                                           obs.windCE$hora,":01"),
+                                                                    obs.windCE$hora,":01"),
                                                              format = "%Y-%m-%d %H:%M:%S",
                                                              tz = "GMT")),
-                                                    obs.windCE[,-(1:2)])
+                           obs.windCE[,-(1:2)])
   obs.windCE <- subset(obs.windCE,
                        substr(obs.windCE$data.hora,15,16)=="00" |
-                       substr(obs.windCE$data.hora,15,16)=="30")
-  obs.windtorreCE <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/dados_torre_energimp_parajuru_30min_20170101_20171231.csv")
+                         substr(obs.windCE$data.hora,15,16)=="30")
+  obs.windtorreCE <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/dados_torre_energimp_parajuru_30min_20170101_20171231.csv")
   obs.windtorreCE <- data.frame(data.hora = as.character(strptime(paste0(as.character(obs.windtorreCE$data)," ",
-                                                            ifelse(nchar(obs.windtorreCE$hora)==2,
-                                                                   obs.windtorreCE$hora,
-                                                                   paste0("0",obs.windtorreCE$hora)),":",
-                                                            ifelse(nchar(obs.windtorreCE$minutos)==2,
-                                                                   obs.windtorreCE$minutos,
-                                                                   paste0("0",obs.windtorreCE$minutos)),
-                                                            ":01"),
-                                                     format = "%Y-%m-%d %H:%M:%S",
-                                                     tz = "GMT")),
+                                                                         ifelse(nchar(obs.windtorreCE$hora)==2,
+                                                                                obs.windtorreCE$hora,
+                                                                                paste0("0",obs.windtorreCE$hora)),":",
+                                                                         ifelse(nchar(obs.windtorreCE$minutos)==2,
+                                                                                obs.windtorreCE$minutos,
+                                                                                paste0("0",obs.windtorreCE$minutos)),
+                                                                         ":01"),
+                                                                  format = "%Y-%m-%d %H:%M:%S",
+                                                                  tz = "GMT")),
                                 torre = obs.windtorreCE$vel85)
   obs.windCE <- merge(x = obs.windCE,y = obs.windtorreCE,by = "data.hora",all = TRUE)
   rm(obs.windtorreCE)
   obs.windCE$data.hora <- as.character(obs.windCE$data.hora)
-  coords.windfarm <- read.csv2("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/coords_parque_praias_de_parajuru_energimp.csv")
+  coords.windfarm <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/coords_parque_praias_de_parajuru_energimp.csv")
   coords.windfarm[,1] <- as.character(coords.windfarm[,1])
   coords.windfarm[,2] <- as.numeric(as.character(coords.windfarm[,2]))
   coords.windfarm[,3] <- as.numeric(as.character(coords.windfarm[,3]))
@@ -93,8 +93,8 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   }
   coords.windfarm <- coords.windfarm[locat.aux,]
   rm(locat.aux,l)
-  coords.ETACE <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/coords_Eta5km_operacional_CE.csv")
-  prevnumext <- read.csv("C:/Users/ledua/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/previsoes_numericas_parajuru_20170102_20171229.csv")
+  coords.ETACE <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/coords_Eta5km_operacional_CE.csv")
+  prevnumext <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/previsoes_numericas_parajuru_20170102_20171229.csv")
   prevnumext$runtime1 <- strptime(paste0(substr(as.character(prevnumext$runtime1),1,4),"-",
                                          substr(as.character(prevnumext$runtime1),5,6),"-",
                                          substr(as.character(prevnumext$runtime1),7,8)," ",
@@ -103,12 +103,12 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                   format = "%Y-%m-%d %H:%M:%S",
                                   tz = "GMT")
   prevnumext$prevtime1 <- strptime(paste0(substr(as.character(prevnumext$prevtime1),1,4),"-",
-                                         substr(as.character(prevnumext$prevtime1),5,6),"-",
-                                         substr(as.character(prevnumext$prevtime1),7,8)," ",
-                                         substr(as.character(prevnumext$prevtime1),9,10),":",
-                                         substr(as.character(prevnumext$prevtime1),11,12),":01"),
-                                  format = "%Y-%m-%d %H:%M:%S",
-                                  tz = "GMT")
+                                          substr(as.character(prevnumext$prevtime1),5,6),"-",
+                                          substr(as.character(prevnumext$prevtime1),7,8)," ",
+                                          substr(as.character(prevnumext$prevtime1),9,10),":",
+                                          substr(as.character(prevnumext$prevtime1),11,12),":01"),
+                                   format = "%Y-%m-%d %H:%M:%S",
+                                   tz = "GMT")
   
   prevnumext <- data.frame(runtime1 = prevnumext$runtime1,
                            prevtime1 = prevnumext$prevtime1,
@@ -127,7 +127,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                                    forecast.hour,":00:01"),
                                             format = "%Y-%m-%d %H:%M:%S",
                                             tz = "GMT")-(horizon-24)*60*60-30*60,30*60))
-    
+  
   # #------ Recuperando as informacoes nos arquivos .csv ------#
   # #----------------------------------------------------------------------------------------------
   # # VELOCIDADE DO VENTO - 10 m
@@ -214,9 +214,9 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   D <- matrix(as.numeric(D),dim(D)[1],dim(D)[2])
   
   #------ Matriz de evolucao Gt ------#
-  Gt <- as.matrix(bdiag(diag(1,4),
-                        matrix(c(cos(2*pi*1/24),-sin(2*pi*1/24),
-                                 sin(2*pi*1/24),cos(2*pi*1/24)),2)))
+  Gt <- as.matrix(bdiag(diag(1,1),
+                        matrix(c(cos(2*pi*1/48),-sin(2*pi*1/48),
+                                 sin(2*pi*1/48),cos(2*pi*1/48)),2)))
   Gt <- matrix(as.numeric(Gt),dim(Gt)[1],dim(Gt)[2])
   # Gt = matriz bloco diagonal: diag(qtd de cov + 1 - 2) + harmonicos (fc de sen e cos)
   
@@ -237,16 +237,13 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   {
     Yt[,,t] <- as.numeric(subset(obs.windCE, obs.windCE$data.hora == train.period[t-1])[,-1])
     
-    Ft[,,t] <- t(data.frame(level = 1,
-                            # A restricao do horizonte de previsao nas previsoes passadas nao pode ser cumprida aqui
-                            # Nao ha previsao sab, dom e feriados. Assim, o jeito e usar sem restricao
-                            ensemble.mean = rep(as.numeric(apply(subset(prevnumext, 
-                                                                        prevnumext$prevtime1 == train.period[t-1],
-                                                                        "wind_speed"),2,mean)),n),
-                            lat = coords.windfarm$latitude,
-                            long = coords.windfarm$longitude,
-                            saz1 = 1,
-                            saz2 = 0))
+    Ft[,,t] <- t(data.frame(# A restricao do horizonte de previsao nas previsoes passadas nao pode ser cumprida aqui
+      # Nao ha previsao sab, dom e feriados. Assim, o jeito e usar sem restricao
+      ensemble.mean = rep(as.numeric(apply(subset(prevnumext, 
+                                                  prevnumext$prevtime1 == train.period[t-1],
+                                                  "wind_speed"),2,mean)),n),
+      saz1 = 1,
+      saz2 = 0))
   }
   
   #------ Periodo de previsao ------#
@@ -361,16 +358,13 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   {
     Yt.k[,,t] <- as.numeric(subset(obs.windCE, obs.windCE$data.hora == forecast.period[t-1])[,-1])
     
-    Ft.new[,,t] <- t(data.frame(level = 1,
-                                # A restricao do horizonte de previsao nas previsoes passadas nao pode ser cumprida aqui
-                                # Nao ha previsao sab, dom e feriados. Assim, o jeito e usar sem restricao
-                                ensemble.mean = rep(as.numeric(apply(subset(prevnumext, 
-                                                                            prevnumext$prevtime1 == forecast.period[t-1],
-                                                                            "wind_speed"),2,mean)),n),
-                                lat = coords.windfarm$latitude,
-                                long = coords.windfarm$longitude,
-                                saz1 = 1,
-                                saz2 = 0))
+    Ft.new[,,t] <- t(data.frame(# A restricao do horizonte de previsao nas previsoes passadas nao pode ser cumprida aqui
+      # Nao ha previsao sab, dom e feriados. Assim, o jeito e usar sem restricao
+      ensemble.mean = rep(as.numeric(apply(subset(prevnumext, 
+                                                  prevnumext$prevtime1 == forecast.period[t-1],
+                                                  "wind_speed"),2,mean)),n),
+      saz1 = 1,
+      saz2 = 0))
   }
   
   resultado <- list(Yt = Yt,
@@ -416,8 +410,12 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
   #------ Contador de tempo ------#
   a <- Sys.time()
   
+  #------ Valores missing ------#
+  YtNA <- which(is.na(Yt),arr.ind = TRUE)
+  YtNA <- subset(YtNA,YtNA[,3]!=1)
+  
   #------ Inputando valores ------#
-  Yt[which(is.na(Yt),arr.ind = TRUE)[-1,]] <- 1
+  Yt[YtNA] <- 1
   
   #---------------------#
   #------ Funcoes ------#
@@ -687,15 +685,15 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
   #------ Distribuicoes a priori ------#
   #------------------------------------#
   
-  #------ phi ------#
-  a.phi.prior <- 2
-  b.phi.prior <- max(Dist)/6
-  log.phi.prior <- function(x){dgamma(x,shape = a.phi.prior,rate = b.phi.prior,log = T)}
+  # #------ phi ------#
+  # a.phi.prior <- 2
+  # b.phi.prior <- max(Dist)/6
+  # log.phi.prior <- function(x){dgamma(x,shape = a.phi.prior,rate = b.phi.prior,log = T)}
   
-  #------ lambda ------#
-  mu.lambda.prior <- 1
-  sigma.lambda.prior <- 1
-  log.lambda.prior <- function(x){dnorm(x,mean = mu.lambda.prior,sd = sqrt(sigma.lambda.prior),log = T)}
+  # #------ lambda ------#
+  # mu.lambda.prior <- 1
+  # sigma.lambda.prior <- 1
+  # log.lambda.prior <- function(x){dnorm(x,mean = mu.lambda.prior,sd = sqrt(sigma.lambda.prior),log = T)}
   
   #------------------------------------------#
   #------ Valores iniciais das cadeias ------#
@@ -712,34 +710,53 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
   sigma2t.chain.final <- matrix(NA,T+1,M)
   
   #------ phi e lambda = PSI ------#
-  PSI.chain <- data.frame(t(c(3,2)))
-  names(PSI.chain) <- c("phi","lambda")
+  # PSI.chain <- data.frame(t(c(1,1)))
+  # names(PSI.chain) <- c("phi","lambda")
+  # PSI.chain <- data.frame(t(c(1)))
+  # names(PSI.chain) <- c("lambda")
   
   #------ Matriz de correlacao da proposta M-H ------#
-  EPS.PSI <- diag(2.4/sqrt(dim(PSI.chain)[2]),dim(PSI.chain)[2])
+  # EPS.PSI <- diag(2.4/sqrt(dim(PSI.chain)[2]),dim(PSI.chain)[2])
   
   #------ Vetor de PGs latentes correntes ------#
-  Xt <- BC(Yt = Yt, lambda = PSI.chain$lambda, csrd = csrd)
+  # Xt <- BC(Yt = Yt, lambda = PSI.chain$lambda, csrd = csrd)
+  Xt <- BC(Yt = Yt, lambda = 1, csrd = csrd)
   
   #------ Matriz de correlacao corrente ------#
-  mat.cor.c <- MatCor(phi = PSI.chain$phi, DistMatrix = Dist)
+  # mat.cor.c <- MatCor(phi = PSI.chain$phi, DistMatrix = Dist)
+  mat.cor.c <- MatCor(phi = 100000, DistMatrix = Dist)
   
   #------ Fc de verossimilhanca corrente ------#
-  p.log <- function(x)
-  {
-    if (all(x>0))
-    {
-      loglikep(Yt = Yt,
-               Ft = Ft,
-               Thetat = auxFFBS$Thetatchain,
-               sigma2t = auxFFBS$sigma2tchain,
-               phi = x[1],
-               lambda = x[2],
-               DistMatrix = Dist,
-               csrd = csrd) +
-        log.phi.prior(x[1]) + log.lambda.prior(x[2])
-    } else {-9.99e+300}
-  }
+  # p.log <- function(x)
+  # {
+  #   if (all(x>0))
+  #   {
+  #     loglikep(Yt = Yt,
+  #              Ft = Ft,
+  #              Thetat = auxFFBS$Thetatchain,
+  #              sigma2t = auxFFBS$sigma2tchain,
+  #              phi = x[1],
+  #              lambda = x[2],
+  #              DistMatrix = Dist,
+  #              csrd = csrd) +
+  #       log.phi.prior(x[1]) + log.lambda.prior(x[2])
+  #   } else {-9.99e+300}
+  # }
+  # p.log <- function(x)
+  # {
+  #   if (all(x>0))
+  #   {
+  #     loglikep(Yt = Yt,
+  #              Ft = Ft,
+  #              Thetat = auxFFBS$Thetatchain,
+  #              sigma2t = auxFFBS$sigma2tchain,
+  #              phi = 100000,
+  #              lambda = x,
+  #              DistMatrix = Dist,
+  #              csrd = csrd) +
+  #       log.lambda.prior(x)
+  #   } else {-9.99e+300}
+  # }
   
   #------ Atualizacao da barra de progresso ------#
   update.step <- max(5, floor(M/100))
@@ -769,24 +786,24 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
     #------ Metropolis-Hastings com propostas adaptativas para PSI ------#
     #--------------------------------------------------------------------#
     
-    if (i==2)
-    {
-      sampMH <- MHadapt(p.log, n=salto, init=as.numeric(PSI.chain[i-1,]),
-                        scale = EPS.PSI,
-                        adapt=TRUE, acc.rate=0.234, showProgressBar=FALSE)
-    } else {
-      sampMH <- MHadapt.add(sampMH, n.update=salto,showProgressBar=FALSE)
-    }
-    
-    #------ Thinning ------# 
-    PSI.chain[i,] <- sampMH$samples[(i-1)*salto,]
+    # if (i==2)
+    # {
+    #   sampMH <- MHadapt(p.log, n=salto, init=as.numeric(PSI.chain[i-1,]),
+    #                     scale = EPS.PSI,
+    #                     adapt=TRUE, acc.rate=0.234, showProgressBar=FALSE)
+    # } else {
+    #   sampMH <- MHadapt.add(sampMH, n.update=salto,showProgressBar=FALSE)
+    # }
+    # 
+    # #------ Thinning ------# 
+    # PSI.chain[i,] <- sampMH$samples[(i-1)*salto,]
     
     #------ Atualizacao da matriz de correlacao corrente Vt(k) ------#
-    if (all.equal(as.numeric(PSI.chain[i,]),as.numeric(PSI.chain[i-1,]))!=T)
-    {
-      #------ Matriz de correlacao corrente ------#
-      mat.cor.c <- MatCor(phi = PSI.chain$phi[i], DistMatrix = Dist)
-    }
+    # if (all.equal(as.numeric(PSI.chain[i,]),as.numeric(PSI.chain[i-1,]))!=T)
+    # {
+    #   #------ Matriz de correlacao corrente ------#
+    #   mat.cor.c <- MatCor(phi = PSI.chain$phi[i], DistMatrix = Dist)
+    # }
     
     #--------------------------------------------------#
     #------ Amostrador de Gibbs p/ Z var latente ------#
@@ -811,8 +828,31 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
       }
     }
     
+    #--------------------------------------------------#
+    #------ Amostrador de Gibbs p/ U var latente ------#
+    #--------------------------------------------------#
+    for (t in unique(YtNA[,3]))
+    {
+      miss.c <- subset(YtNA,YtNA[,3]==t)[,1]
+      Ut.c <- mvtnorm::rmvnorm(n = 1,
+                               mean = Xt.mu[,,t],
+                               sigma = auxFFBS$sigma2tchain[t]*mat.cor.c,
+                               method = "chol")
+      Yt[miss.c,,t] <- ifelse(is.nan(Ut.c[,miss.c])==F,
+                              Ut.c[,miss.c],
+                              Yt[miss.c,,t])
+    }
+    
+    #------ Ut ------#
+    Ut <- Yt
+    # Evitar transformacao dos valores
+    Yt[YtNA] <- -1
+    
     #------ Vetor de PGs latentes correntes ------#
-    Xt <- BC(Yt = Yt, lambda = PSI.chain$lambda[i], csrd = csrd)
+    # Xt <- BC(Yt = Yt, lambda = PSI.chain$lambda[i], csrd = csrd)
+    Xt <- BC(Yt = Yt, lambda = 1, csrd = csrd)
+    Xt[YtNA] <- Ut[YtNA]
+    Yt[YtNA] <- Ut[YtNA]
     
     #------ Barra de progresso na tela ------#
     if((i%%update.step)==0){setTxtProgressBar(pb, i)}
@@ -832,15 +872,19 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
   par(mar=c(4,4,.5,.5))
   par(mfrow=c(2,2))
   
-  #------ phi ------#
-  plot(sampMH$samples[,1],type="l",ylab=expression(phi),xlab="Iteracoes")
-  abline(v=burnin*salto,lty=2)
-  acf(sampMH$samples[,1],lag.max = 25,main="",ylab="",xlab="Defasagem")
+  # #------ phi ------#
+  # plot(sampMH$samples[,1],type="l",ylab=expression(phi),xlab="Iteracoes")
+  # abline(v=burnin*salto,lty=2)
+  # acf(sampMH$samples[,1],lag.max = 25,main="",ylab="",xlab="Defasagem")
   
+  # #------ lambda ------#
+  # plot(sampMH$samples[,2],type="l",ylab=expression(lambda),xlab="Iteracoes")
+  # abline(v=burnin*salto,lty=2)
+  # acf(sampMH$samples[,2],lag.max = 25,main="",ylab="",xlab="Defasagem")
   #------ lambda ------#
-  plot(sampMH$samples[,2],type="l",ylab=expression(lambda),xlab="Iteracoes")
-  abline(v=burnin*salto,lty=2)
-  acf(sampMH$samples[,2],lag.max = 25,main="",ylab="",xlab="Defasagem")
+  # plot(sampMH$samples[,1],type="l",ylab=expression(lambda),xlab="Iteracoes")
+  # abline(v=burnin*salto,lty=2)
+  # acf(sampMH$samples[,1],lag.max = 25,main="",ylab="",xlab="Defasagem")
   
   #-------------------------------------------------#
   #------ Amostras da distribuicao posteriori ------#
@@ -848,7 +892,7 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
   
   #------ Thetat ------#
   par(mar=c(4,4,.5,.5))
-  par(mfrow=c(4,2))
+  par(mfrow=c(2,2))
   graf.Thetat <- array(NA,dim=c(3,r,T+1))
   for(l in 1:(T+1))
   {
@@ -888,45 +932,46 @@ MCMC <- function(M, # Qtd de amostras a posteriori (+ burnin)
   #------ phi ------#
   par(mar=c(4,4,.5,.5))
   par(mfrow=c(2,3))
-  plot(PSI.chain$phi[-(1:burnin)],type="l",ylab=expression(phi),xlab="Iteracoes")
-  acf(PSI.chain$phi[-(1:burnin)],lag.max = 20,main="",ylab="",xlab="Defasagem")
-  d <- density(x = PSI.chain$phi[-(1:burnin)], adjust = 2)
-  plot(d, xlab=expression(phi), main="",ylab="Densidade")
-  h1 <- d$x[d$x >= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.975)))] # ?rea a ser pintada
-  h2 <- d$y[which(d$x >= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.975))))]
-  polygon(c(min(h1),h1,max(h1)),c(0,h2,0),col="gray80")
-  lines(d,lwd=2)
-  lines(seq(min(d$x),max(d$x),.01),exp(log.phi.prior(seq(min(d$x),max(d$x),.01))),lwd=2,lty=2)
-  abline(h=0)
+  # plot(PSI.chain$phi[-(1:burnin)],type="l",ylab=expression(phi),xlab="Iteracoes")
+  # acf(PSI.chain$phi[-(1:burnin)],lag.max = 20,main="",ylab="",xlab="Defasagem")
+  # d <- density(x = PSI.chain$phi[-(1:burnin)], adjust = 2)
+  # plot(d, xlab=expression(phi), main="",ylab="Densidade")
+  # h1 <- d$x[d$x >= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.975)))] # ?rea a ser pintada
+  # h2 <- d$y[which(d$x >= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$phi[-(1:burnin)],c(0.975))))]
+  # polygon(c(min(h1),h1,max(h1)),c(0,h2,0),col="gray80")
+  # lines(d,lwd=2)
+  # lines(seq(min(d$x),max(d$x),.01),exp(log.phi.prior(seq(min(d$x),max(d$x),.01))),lwd=2,lty=2)
+  # abline(h=0)
   
   #------ lambda ------#
-  plot(PSI.chain$lambda[-(1:burnin)],type="l",ylab=expression(lambda),xlab="Iteracoes")
-  acf(PSI.chain$lambda[-(1:burnin)],lag.max = 20,main="",ylab="",xlab="Defasagem")
-  d <- density(x = PSI.chain$lambda[-(1:burnin)], adjust = 2)
-  plot(d, xlab=expression(lambda), main="",ylab="Densidade")
-  h1 <- d$x[d$x >= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.975)))] # ?rea a ser pintada
-  h2 <- d$y[which(d$x >= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.975))))]
-  polygon(c(min(h1),h1,max(h1)),c(0,h2,0),col="gray80")
-  lines(d,lwd=2)
-  lines(seq(min(d$x),max(d$x),.01),exp(log.lambda.prior(seq(min(d$x),max(d$x),.01))),lwd=2,lty=2)
-  abline(h=0)
+  # plot(PSI.chain$lambda[-(1:burnin)],type="l",ylab=expression(lambda),xlab="Iteracoes")
+  # acf(PSI.chain$lambda[-(1:burnin)],lag.max = 20,main="",ylab="",xlab="Defasagem")
+  # d <- density(x = PSI.chain$lambda[-(1:burnin)], adjust = 2)
+  # plot(d, xlab=expression(lambda), main="",ylab="Densidade")
+  # h1 <- d$x[d$x >= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.975)))] # ?rea a ser pintada
+  # h2 <- d$y[which(d$x >= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.025))) & d$x <= as.numeric(quantile(PSI.chain$lambda[-(1:burnin)],c(0.975))))]
+  # polygon(c(min(h1),h1,max(h1)),c(0,h2,0),col="gray80")
+  # lines(d,lwd=2)
+  # lines(seq(min(d$x),max(d$x),.01),exp(log.lambda.prior(seq(min(d$x),max(d$x),.01))),lwd=2,lty=2)
+  # abline(h=0)
   
   #------ Salvando resultado em forma de lista ------#
-  resultado <- list(taxa.aceit = round(sampMH$acceptance.rate,4),
-                    ht.post = ht.final,
-                    Ht.post = Ht.final,
-                    Thetat.post = Thetat.chain.final,
-                    sigma2t.post = sigma2t.chain.final,
-                    phi.post = PSI.chain$phi,
-                    lambda.post = PSI.chain$lambda,
-                    M = M,
-                    burnin = burnin,
-                    salto = salto,
-                    Desc = Desc,
-                    delta.sig2 = delta.sig2,
-                    T = T,
-                    r = r,
-                    Gt = Gt)
+  resultado <- list(
+    # taxa.aceit = round(sampMH$acceptance.rate,4),
+    ht.post = ht.final,
+    Ht.post = Ht.final,
+    Thetat.post = Thetat.chain.final,
+    sigma2t.post = sigma2t.chain.final,
+    # phi.post = PSI.chain$phi,
+    # lambda.post = PSI.chain$lambda,
+    M = M,
+    burnin = burnin,
+    salto = salto,
+    Desc = Desc,
+    delta.sig2 = delta.sig2,
+    T = T,
+    r = r,
+    Gt = Gt)
   
   #------ Retornando lista ------#
   return(resultado)
@@ -970,8 +1015,9 @@ previsao.posteriori <- function(Ft.k,
   Desc <- estimacao.resultados$Desc
   
   #------ Removendo o burn-in ------#
-  PSI.chain <- data.frame(phi = estimacao.resultados$phi.post,
-                          lambda = estimacao.resultados$lambda.post)[-(1:estimacao.resultados$burnin),]
+  # PSI.chain <- data.frame(phi = estimacao.resultados$phi.post,
+  #                         lambda = estimacao.resultados$lambda.post)[-(1:estimacao.resultados$burnin),]
+  # PSI.chain <- data.frame(lambda = data.frame(lambda = estimacao.resultados$lambda.post)[-(1:estimacao.resultados$burnin),])
   ht.final <- estimacao.resultados$ht.post[-(1:estimacao.resultados$burnin),]
   Ht.final <- estimacao.resultados$Ht.post[,,-(1:estimacao.resultados$burnin)]
   sigma2t.chain.final <- estimacao.resultados$sigma2t.post[,-(1:estimacao.resultados$burnin)]
@@ -995,7 +1041,8 @@ previsao.posteriori <- function(Ft.k,
     Qt.k <- array(NA,dim=c(n.new,n.new,T.new+1))
     Rt.k <- array(NA,dim=c(estimacao.resultados$r,estimacao.resultados$r,T.new+1))
     Rt.k[,,1] <- Ht.final[,,m]
-    mat.cor.new <- MatCor(phi = PSI.chain$phi[m], DistMatrix = D.full)
+    # mat.cor.new <- MatCor(phi = PSI.chain$phi[m], DistMatrix = D.full)
+    mat.cor.new <- MatCor(phi = 100000, DistMatrix = D.full)
     sigma2t.k <- sigma2t.chain.final[(T+1),m]
     for (k in 2:(T.new+1))
     {
@@ -1005,8 +1052,10 @@ previsao.posteriori <- function(Ft.k,
       Qt.k <- symmetricMatrix(t(Ft.k[,,k])%*%Rt.k[,,k]%*%Ft.k[,,k]+
                                 sigma2t.k*mat.cor.new)
       Xt.k <- as.numeric(mvnfast::rmvn(n = 1, mu = ft.k, sigma = Qt.k,isChol = TRUE))
-      Yt.prev[,m,k] <- ifelse(Xt.k>=((csrd^PSI.chain$lambda[m])-1)/PSI.chain$lambda[m],
-                              BCinv(Xt.k,lambda = PSI.chain$lambda[m]),0)
+      # Yt.prev[,m,k] <- ifelse(Xt.k>=((csrd^PSI.chain$lambda[m])-1)/PSI.chain$lambda[m],
+      #                         BCinv(Xt.k,lambda = PSI.chain$lambda[m]),0)
+      Yt.prev[,m,k] <- ifelse(Xt.k>=((csrd^1)-1)/1,
+                              BCinv(Xt.k,lambda = 1),0)
     }
     
     #------ Barra de progresso na tela ------#
@@ -1031,11 +1080,11 @@ previsao.posteriori <- function(Ft.k,
   for (k in 2:(T.new+1))
   {
     # Media do ensemble
-    rEQM[k-1,2] <- sqrt(mean((Yt.k[,,k] - Ft.k[2,1:n,k])^2))
+    rEQM[k-1,2] <- sqrt(mean((Yt.k[,,k] - Ft.k[1,1:n,k])^2,na.rm = T))
     # Media a posteriori
-    rEQM[k-1,3] <- sqrt(mean((Yt.k[,,k] - apply(Yt.prev[1:n,,k],1,mean))^2))
+    rEQM[k-1,3] <- sqrt(mean((Yt.k[,,k] - apply(Yt.prev[1:n,,k],1,mean))^2,na.rm = T))
     # Mediana a posteriori
-    rEQM[k-1,5] <- sqrt(mean((Yt.k[,,k] - rowMedians(Yt.prev[1:n,,k]))^2))
+    rEQM[k-1,5] <- sqrt(mean((Yt.k[,,k] - rowMedians(Yt.prev[1:n,,k]))^2,na.rm = T))
   }
   
   rEQM[,4] <- ifelse(rEQM[,3]>rEQM[,2],1,0)
@@ -1052,11 +1101,11 @@ previsao.posteriori <- function(Ft.k,
   for (k in 2:(T.new+1))
   {
     # Media do ensemble
-    EAM[k-1,2] <- mean(abs(Yt.k[,,k] - Ft.k[2,1:n,k]))
+    EAM[k-1,2] <- mean(abs(Yt.k[,,k] - Ft.k[1,1:n,k]),na.rm = T)
     # Media a posteriori
-    EAM[k-1,3] <- mean(abs(Yt.k[,,k] - apply(Yt.prev[1:n,,k],1,mean)))
+    EAM[k-1,3] <- mean(abs(Yt.k[,,k] - apply(Yt.prev[1:n,,k],1,mean)),na.rm = T)
     # Mediana a posteriori
-    EAM[k-1,5] <- mean(abs(Yt.k[,,k] - rowMedians(Yt.prev[1:n,,k])))
+    EAM[k-1,5] <- mean(abs(Yt.k[,,k] - rowMedians(Yt.prev[1:n,,k])),na.rm = T)
   }
   
   EAM[,4] <- ifelse(EAM[,3]>EAM[,2],1,0)
@@ -1064,7 +1113,7 @@ previsao.posteriori <- function(Ft.k,
   
   #------ Indice de concordancia de Willmott ------#
   ind.concord <- function(sim,obs)
-  {1 - ((sum((obs-sim)^2))/sum((abs(sim-mean(obs)) + abs(obs-mean(obs)))^2))}
+  {1 - ((sum((obs-sim)^2,na.rm=T))/sum((abs(sim-mean(obs,na.rm=T)) + abs(obs-mean(obs,na.rm=T)))^2,na.rm=T))}
   
   ICW <- data.frame(forecast.period,
                     ensemble = NA,
@@ -1076,7 +1125,7 @@ previsao.posteriori <- function(Ft.k,
   for (k in 2:(T.new+1))
   {
     # Media do ensemble
-    ICW[k-1,2] <- ind.concord(sim=Ft.k[2,1:n,k], obs = Yt.k[,,k])
+    ICW[k-1,2] <- ind.concord(sim=Ft.k[1,1:n,k], obs = Yt.k[,,k])
     # Media a posteriori
     ICW[k-1,3] <- ind.concord(sim=apply(Yt.prev[1:n,,k],1,mean), obs = Yt.k[,,k])
     # Mediana a posteriori
@@ -1089,25 +1138,25 @@ previsao.posteriori <- function(Ft.k,
   #------ Graficos - Concordancia ------#
   par(mar=c(4,4,.5,.5))
   par(mfrow=c(1,2))
-  plot(0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),
-       0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),t="l",
+  plot(ceiling(min(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)):ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
+       ceiling(min(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)):ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),t="l",
        xlab="Previsão numérica", ylab="Observado")
-  points(as.numeric(Ft.k[2,1:n,2:(T.new+1)]),
+  points(as.numeric(Ft.k[1,1:n,2:(T.new+1)]),
          as.numeric(Yt.k[,,2:(T.new+1)]),pch=19,col=2)
-  abline(v=1:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),
-         h=1:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),
+  abline(v=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
+         h=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
          lty=2)
   
-  plot(0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),
-       0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),t="l",
+  plot(ceiling(min(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)):ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
+       ceiling(min(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)):ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),t="l",
        xlab="Previsão numérica calibrada", ylab="Observado")
   for (k in 2:(T.new+1))
   {
     points(rowMedians(Yt.prev[1:n,,k]),
            as.numeric(Yt.k[,,k]),pch=19,col=2)
   }
-  abline(v=1:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),
-         h=1:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]))),
+  abline(v=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
+         h=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
          lty=2)
   
   #------ Resultado ------#
@@ -1115,7 +1164,7 @@ previsao.posteriori <- function(Ft.k,
                     rEQM = rEQM,
                     EAM = EAM,
                     ICW = ICW)
-
+  
   #------ Tempo total de processamento ------#
   b <- Sys.time()-a
   print(b)
@@ -1125,23 +1174,23 @@ previsao.posteriori <- function(Ft.k,
 
 #-------------------------------------- FUNCOES - Rcpp ---------------------------------------
 
-Rcpp::sourceCpp("C:/Users/ledua/Desktop/Calibration_EtaModel/Funcs_cpp/Funcs_DGOP.cpp")
+Rcpp::sourceCpp("C:/Users/b207056565/Desktop/Calibration_EtaModel/Funcs_cpp/Funcs_DGOP.cpp")
 
 #----------------------------------------------------------------------------------------------
 # RESULTADOS
 #----------------------------------------------------------------------------------------------
 
-DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-12-04"),
+DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-08-21"),
                                  forecast.hour = 06,
                                  horizon = 96,
-                                 lag.hours = 72)    
+                                 lag.hours = 480)    
 
-RESULTADO <- MCMC(M = 300,
+RESULTADO <- MCMC(M = 600,
                   burnin = 100,
-                  salto = 30,
-                  Desc = c(.99,.99,.99,.99,
-                           rep(.95,2)),
-                  delta.sig2 = 1,
+                  salto = 20,
+                  Desc = c(.99,
+                           rep(.99,2)),
+                  delta.sig2 = .95,
                   Yt = DEFINICOES$Yt,
                   Ft = DEFINICOES$Ft,
                   Gt = DEFINICOES$Gt,
@@ -1159,22 +1208,29 @@ PREVISAO <- previsao.posteriori(Ft.k = DEFINICOES$Ft.k,
 
 # save.image(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m02/DGOP_teste.Rda"))
 
+View(PREVISAO$rEQM)
+View(PREVISAO$EAM)
+View(PREVISAO$ICW)
+
 #------ Graficos ------#
 Yt <- DEFINICOES$Yt
 T.new <- length(DEFINICOES$forecast.period)
 Yt.prev <- PREVISAO$Yt.prev
 Yt.k <- DEFINICOES$Yt.k
 Ft.new <- DEFINICOES$Ft.k
+n <- dim(DEFINICOES$Yt)[1]
 
 par(mfrow=c(2,1))
 par(mar=c(4,4,3,.5))
-for (l in 1:59)
+for (l in 1:n)
 {
-  plot(0,type="n",ylim=c(0,12),xlim=c(1,(T.new+1)),
+  plot(0,type="n",ylim=c(5,15),xlim=c(1,(T.new+1)),
        ylab=DEFINICOES$relatorio$codigo[l],xlab="horizonte", axes= F)
   axis(1,1:(length(DEFINICOES$forecast.period)+1),c("0",paste0("+",1:length(DEFINICOES$forecast.period))))
-  # axis(3,1:(length(DEFINICOES$forecast.period)+1),
-  #      paste0(rep(c(12:23,0:12),length(DEFINICOES$forecast.period)/24),"h"))
+  axis(3,1:(length(DEFINICOES$forecast.period)+1),
+       c("5.5h",paste0(rep(c(seq(6,23.5,.5),seq(0,5.5,.5)),
+                           length(DEFINICOES$forecast.period)/48),"h"),
+         "6h"))
   abline(h=0)
   polygon(c(rev(2:(T.new+1)),2:(T.new+1)),
           c(rev(colQuantiles(Yt.prev[l,,2:(T.new+1)],probs = 0.025)),
@@ -1185,14 +1241,37 @@ for (l in 1:59)
             colQuantiles(Yt.prev[l,,2:(T.new+1)],probs = 0.9)),
           col="grey90",border=NA)
   abline(v=1:(length(DEFINICOES$forecast.period)+1),lty=2,col="grey80")
-  axis(2,0:12,0:12)
+  axis(2,5:15,5:15)
   points(1,Yt[l,,T+1],pch=19,col=2)
   points(2:(T.new+1),Yt.k[l,,2:(T.new+1)],pch=19,col=2)
   lines(2:(T.new+1),colMeans(Yt.prev[l,,2:(T.new+1)]),lty=2,lwd=2)
-  lines(2:(T.new+1),Ft.new[2,l,2:(T.new+1)],lty=2,lwd=2,col=4)
+  lines(2:(T.new+1),Ft.new[1,l,2:(T.new+1)],lty=2,lwd=2,col=4)
 }
 
-rm(Yt,T.new,Yt.prev,Yt.k,Ft.new,l)
+rm(Yt,T.new,Yt.prev,Yt.k,Ft.new,l,n)
 
+par(mfrow=c(1,1))
+par(mar=c(4,4,.5,.5))
+plot(PREVISAO$rEQM[,c(2)],t="l",lwd=2,xlab="tempo",ylab="rEQM",
+     ylim = c(min(PREVISAO$rEQM[,c(2,5)]),max(PREVISAO$rEQM[,c(2,5)])))
+lines(PREVISAO$rEQM[,c(5)],lwd=2,col=2)
 
+par(mfrow=c(1,1))
+par(mar=c(4,4,.5,.5))
+plot(PREVISAO$EAM[,c(2)],t="l",lwd=2,xlab="tempo",ylab="EAM",
+     ylim = c(min(PREVISAO$EAM[,c(2,5)]),max(PREVISAO$EAM[,c(2,5)])))
+lines(PREVISAO$EAM[,c(5)],lwd=2,col=2)
 
+par(mfrow=c(1,1))
+par(mar=c(4,4,.5,.5))
+plot(PREVISAO$ICW[,c(2)],t="l",lwd=2,xlab="tempo",ylab="ICW",
+     ylim = c(min(PREVISAO$ICW[,c(2,5)]),max(PREVISAO$ICW[,c(2,5)])))
+lines(PREVISAO$ICW[,c(5)],lwd=2,col=2)
+
+data.frame(rEQM = colMeans2(as.matrix(PREVISAO$rEQM[,c(2,5)])),
+           EAM = colMeans2(as.matrix(PREVISAO$EAM[,c(2,5)])),
+           ICW = colMeans2(as.matrix(PREVISAO$ICW[,c(2,5)])))
+
+data.frame(rEQM = round(sum(as.matrix(PREVISAO$rEQM[,c(6)]))/nrow(PREVISAO$rEQM),2),
+           EAM = round(sum(as.matrix(PREVISAO$EAM[,c(6)]))/nrow(PREVISAO$EAM),2),
+           ICW = round(sum(as.matrix(PREVISAO$ICW[,c(6)]))/nrow(PREVISAO$ICW),2))
