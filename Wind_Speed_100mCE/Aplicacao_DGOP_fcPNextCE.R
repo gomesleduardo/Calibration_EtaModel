@@ -122,11 +122,11 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   train.period <- as.character(seq(strptime(paste0(forecast.date," ",
                                                    forecast.hour,":00:01"),
                                             format = "%Y-%m-%d %H:%M:%S",
-                                            tz = "GMT")-(horizon-24)*60*60-30*60-(lag.hours-1)*30*60,
+                                            tz = "GMT")-(horizon)*60*60-30*60-(lag.hours-1)*30*60,
                                    strptime(paste0(forecast.date," ",
                                                    forecast.hour,":00:01"),
                                             format = "%Y-%m-%d %H:%M:%S",
-                                            tz = "GMT")-(horizon-24)*60*60-30*60,30*60))
+                                            tz = "GMT")-(horizon)*60*60-30*60,30*60))
   
   # #------ Recuperando as informacoes nos arquivos .csv ------#
   # #----------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   forecast.period <- as.character(seq(strptime(paste0(forecast.date," ",
                                                       forecast.hour,":00:01"),
                                                format = "%Y-%m-%d %H:%M:%S",
-                                               tz = "GMT")-(horizon-24)*60*60,
+                                               tz = "GMT")-(horizon)*60*60,
                                       strptime(paste0(forecast.date," ",
                                                       forecast.hour,":00:01"),
                                                format = "%Y-%m-%d %H:%M:%S",
@@ -1180,17 +1180,17 @@ Rcpp::sourceCpp("C:/Users/b207056565/Desktop/Calibration_EtaModel/Funcs_cpp/Func
 # RESULTADOS
 #----------------------------------------------------------------------------------------------
 
-DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-08-21"),
+DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-11-21"),
                                  forecast.hour = 06,
-                                 horizon = 96,
-                                 lag.hours = 480)    
+                                 horizon = 72,
+                                 lag.hours = 720)    
 
 RESULTADO <- MCMC(M = 600,
                   burnin = 100,
                   salto = 20,
                   Desc = c(.99,
                            rep(.99,2)),
-                  delta.sig2 = .95,
+                  delta.sig2 = .99,
                   Yt = DEFINICOES$Yt,
                   Ft = DEFINICOES$Ft,
                   Gt = DEFINICOES$Gt,
