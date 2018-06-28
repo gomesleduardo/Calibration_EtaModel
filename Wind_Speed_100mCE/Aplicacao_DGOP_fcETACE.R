@@ -135,13 +135,13 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   wind10m.ETA <- data.frame(NULL)
   aux.date <- seq(as.Date(head(unique(substr(train.period,1,10)),n=1))-3,
                   as.Date(tail(unique(substr(train.period,1,10)),n=1)), by = "1 day")
-
+  
   #------ Removendo dias que nao houve funcionamento do Eta ------#
   aux.date.rm <- NULL
   if (sum(aux.date < as.Date("2017-09-29"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date < as.Date("2017-09-29")))
   if (sum(aux.date > as.Date("2017-12-31"))>0) aux.date.rm <- c(aux.date.rm,which(aux.date > as.Date("2017-12-31")))
   if (length(aux.date.rm)>0) aux.date <- aux.date[-aux.date.rm]
-
+  
   for (i in 1:length(aux.date))
   {
     print(paste0(i,"/",length(aux.date)))
@@ -152,33 +152,33 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                substr(aux.date[i],6,7),
                                substr(aux.date[i],9,10),
                                "00.csv"))
-
+    
     #------ organizando dia/hora origem ------#
     aux.csv[,1] <- as.character(strptime(paste0(substr(aux.csv[,1],1,4),"-",
                                                 substr(aux.csv[,1],5,6),"-",
                                                 substr(aux.csv[,1],7,8)," ",
                                                 substr(aux.csv[,1],9,10),":00:01"),
                                          format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT")-3*60*60)
-
+                                         tz = "GMT"))
+    
     #------ organizando dia/hora data de previsao ------#
     aux.csv[,2] <- as.character(strptime(paste0(substr(aux.csv[,2],1,4),"-",
                                                 substr(aux.csv[,2],5,6),"-",
                                                 substr(aux.csv[,2],7,8)," ",
                                                 substr(aux.csv[,2],9,10),":00:01"),
                                          format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT")-3*60*60)
-
+                                         tz = "GMT"))
+    
     #------ criando a variavel "horizonte" ------#
     aux.csv <- data.frame(aux.csv[,1:2],
                           horizonte = as.numeric(difftime(time1 = strptime(aux.csv[,2], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
                                                           time2 = strptime(aux.csv[,1], format = "%Y-%m-%d %H:%M:%S",tz = "GMT"),
                                                           tz = "GMT", units = "hours")),
                           aux.csv[,-(1:2)])
-
+    
     #------ mantendo apenas o horario desejado e o horizonte de interesse ------#
     # aux.csv <- subset(aux.csv,aux.csv$horizonte >= horizon)
-
+    
     #------ interpolando para as estacoes (interpolacao bilinear) ------#
     for (l in 1:dim(aux.csv)[1])
     {
@@ -190,12 +190,12 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                                                                yo = coords.windfarm$latitude)$z)))))
     }
   }
-
+  
   #------ formatando as variaveis ------#
   wind10m.ETA[,1] <- as.character(wind10m.ETA[,1])
   wind10m.ETA[,2] <- as.character(wind10m.ETA[,2])
   for (i in 3:dim(wind10m.ETA)[2]){wind10m.ETA[,i] <- as.numeric(as.character(wind10m.ETA[,i]))}
-
+  
   #------ nomeando as variaveis ------#
   names(wind10m.ETA) <- c(names(aux.csv)[1:3],as.character(coords.windfarm$AG))
   
@@ -210,9 +210,9 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
     {
       AUX[1:length(seq(min(aux.sub$horizonte),
                        max(aux.sub$horizonte),.5)),l2-3] <- approx(aux.sub$horizonte, 
-                                                aux.sub[,l2], 
-                                                xout = seq(min(aux.sub$horizonte),
-                                                           max(aux.sub$horizonte),.5))$y
+                                                                   aux.sub[,l2], 
+                                                                   xout = seq(min(aux.sub$horizonte),
+                                                                              max(aux.sub$horizonte),.5))$y
     }
     names(AUX) <- coords.windfarm$AG
     
@@ -282,7 +282,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   #----------------------------------------------------------------------------------------------
   # VELOCIDADE DO VENTO - 10 m
   #----------------------------------------------------------------------------------------------
-
+  
   wind10m.ETA2 <- data.frame(NULL)
   aux.date <- seq(as.Date(head(unique(substr(forecast.period,1,10)),n=1))-3,
                   as.Date(tail(unique(substr(forecast.period,1,10)),n=1))-2, by = "1 day")
@@ -310,7 +310,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                                 substr(aux.csv[,1],7,8)," ",
                                                 substr(aux.csv[,1],9,10),":00:01"),
                                          format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT")-3*60*60)
+                                         tz = "GMT"))
     
     #------ organizando dia/hora data de previsao ------#
     aux.csv[,2] <- as.character(strptime(paste0(substr(aux.csv[,2],1,4),"-",
@@ -318,7 +318,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                                 substr(aux.csv[,2],7,8)," ",
                                                 substr(aux.csv[,2],9,10),":00:01"),
                                          format = "%Y-%m-%d %H:%M:%S",
-                                         tz = "GMT")-3*60*60)
+                                         tz = "GMT"))
     
     #------ criando a variavel "horizonte" ------#
     aux.csv <- data.frame(aux.csv[,1:2],
@@ -341,12 +341,12 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                                                                  yo = coords.windfarm$latitude)$z)))))
     }
   }
-
+  
   #------ formatando as variaveis ------#
   wind10m.ETA2[,1] <- as.character(wind10m.ETA2[,1])
   wind10m.ETA2[,2] <- as.character(wind10m.ETA2[,2])
   for (i in 3:dim(wind10m.ETA2)[2]){wind10m.ETA2[,i] <- as.numeric(as.character(wind10m.ETA2[,i]))}
-
+  
   #------ nomeando as variaveis ------#
   names(wind10m.ETA2) <- c(names(aux.csv)[1:3],as.character(coords.windfarm$AG))
   
@@ -1223,10 +1223,10 @@ Rcpp::sourceCpp("C:/Users/b207056565/Desktop/Calibration_EtaModel/Funcs_cpp/Func
 # RESULTADOS
 #----------------------------------------------------------------------------------------------
 
-DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-11-21"),
+DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-10-21"),
                                  forecast.hour = 21,
                                  horizon = 72,
-                                 lag.hours = 720)    
+                                 lag.hours = 480)
 
 RESULTADO <- MCMC(M = 600,
                   burnin = 100,
@@ -1272,7 +1272,7 @@ for (l in 1:n)
   axis(1,1:(length(DEFINICOES$forecast.period)+1),c("0",paste0("+",1:length(DEFINICOES$forecast.period))))
   axis(3,1:(length(DEFINICOES$forecast.period)+1),
        c("20.5h",paste0(rep(c(seq(21,23.5,.5),seq(0,20.5,.5)),
-                           length(DEFINICOES$forecast.period)/48),"h"),
+                            length(DEFINICOES$forecast.period)/48),"h"),
          "6h"))
   abline(h=0)
   polygon(c(rev(2:(T.new+1)),2:(T.new+1)),

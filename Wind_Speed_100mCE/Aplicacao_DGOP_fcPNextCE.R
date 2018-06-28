@@ -1180,10 +1180,10 @@ Rcpp::sourceCpp("C:/Users/b207056565/Desktop/Calibration_EtaModel/Funcs_cpp/Func
 # RESULTADOS
 #----------------------------------------------------------------------------------------------
 
-DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-11-21"),
+DEFINICOES <- definicoes.usuario(forecast.date = as.Date("2017-10-21"),
                                  forecast.hour = 06,
                                  horizon = 72,
-                                 lag.hours = 720)    
+                                 lag.hours = 480)    
 
 RESULTADO <- MCMC(M = 600,
                   burnin = 100,
