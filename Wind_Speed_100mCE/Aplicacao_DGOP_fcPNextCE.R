@@ -1153,7 +1153,7 @@ previsao.posteriori <- function(Ft.k,
   for (k in 2:(T.new+1))
   {
     points(rowMedians(Yt.prev[1:n,,k]),
-           as.numeric(Yt.k[,,k]),pch=19,col=2)
+           as.numeric(Yt.k[,,k]),pch=19,col=4)
   }
   abline(v=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
          h=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),

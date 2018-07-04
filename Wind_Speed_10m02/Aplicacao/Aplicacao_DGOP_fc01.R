@@ -68,19 +68,19 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
                                 format = "%Y-%m-%d %H:%M:%S",
                                 tz = "GMT")
   L.class <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Dados_Observados/L_class_144_inmet_auto_20151001_20170930 - ALTERADO59.csv")
-  L.class$data.hora <- strptime(paste0(substr(L.class$data.hora,7,10),"-",
-                                       substr(L.class$data.hora,4,5),"-",
-                                       substr(L.class$data.hora,1,2),
-                                       substr(L.class$data.hora,11,16),":01"),
-                                format = "%Y-%m-%d %H:%M:%S",
-                                tz = "GMT")
+  L.class$data.hora <- as.character(strptime(paste0(substr(L.class$data.hora,7,10),"-",
+                                                    substr(L.class$data.hora,4,5),"-",
+                                                    substr(L.class$data.hora,1,2),
+                                                    substr(L.class$data.hora,11,16),":01"),
+                                             format = "%Y-%m-%d %H:%M:%S",
+                                             tz = "GMT"))
   z0 <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Dados_Observados/z0_mes_144_inmet_auto_20151001_20170930 - ALTERADO59.csv")
-  z0$data.hora <- strptime(paste0(substr(z0$data.hora,7,10),"-",
-                                       substr(z0$data.hora,4,5),"-",
-                                       substr(z0$data.hora,1,2),
-                                       substr(z0$data.hora,11,16),":01"),
-                                format = "%Y-%m-%d %H:%M:%S",
-                                tz = "GMT")
+  z0$data.hora <- as.character(strptime(paste0(substr(z0$data.hora,7,10),"-",
+                                               substr(z0$data.hora,4,5),"-",
+                                               substr(z0$data.hora,1,2),
+                                               substr(z0$data.hora,11,16),":01"),
+                                          format = "%Y-%m-%d %H:%M:%S",
+                                          tz = "GMT"))
   
   #------ Removendo a defasagem na data ------#
   aux.forecast.date <- as.Date(forecast.date-2*(horizon/24))

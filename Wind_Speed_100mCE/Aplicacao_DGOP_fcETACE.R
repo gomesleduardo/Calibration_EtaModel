@@ -54,7 +54,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   a <- Sys.time()
   
   #---------------------------------------- LENDO DADOS ------------------------------------------
-  obs.windCE <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/velvento85m_aerogeradores_parajuru_20170101_20171231.csv")
+  obs.windCE <- read.csv("C:/Users/b207056565/Desktop//Wind_Speed_100mCE/dados_parajuru/velvento85m_aerogeradores_parajuru_20170101_20171231.csv")
   obs.windCE <- data.frame(data.hora = as.character(strptime(paste0(substr(obs.windCE$data,7,10),"-",
                                                                     substr(obs.windCE$data,4,5),"-",
                                                                     substr(obs.windCE$data,1,2)," ",
@@ -65,7 +65,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   obs.windCE <- subset(obs.windCE,
                        substr(obs.windCE$data.hora,15,16)=="00" |
                          substr(obs.windCE$data.hora,15,16)=="30")
-  obs.windtorreCE <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/dados_torre_energimp_parajuru_30min_20170101_20171231.csv")
+  obs.windtorreCE <- read.csv("C:/Users/b207056565/Desktop//Wind_Speed_100mCE/dados_parajuru/dados_torre_energimp_parajuru_30min_20170101_20171231.csv")
   obs.windtorreCE <- data.frame(data.hora = as.character(strptime(paste0(as.character(obs.windtorreCE$data)," ",
                                                                          ifelse(nchar(obs.windtorreCE$hora)==2,
                                                                                 obs.windtorreCE$hora,
@@ -80,7 +80,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   obs.windCE <- merge(x = obs.windCE,y = obs.windtorreCE,by = "data.hora",all = TRUE)
   rm(obs.windtorreCE)
   obs.windCE$data.hora <- as.character(obs.windCE$data.hora)
-  coords.windfarm <- read.csv2("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/coords_parque_praias_de_parajuru_energimp.csv")
+  coords.windfarm <- read.csv2("C:/Users/b207056565/Desktop//Wind_Speed_100mCE/dados_parajuru/coords_parque_praias_de_parajuru_energimp.csv")
   coords.windfarm[,1] <- as.character(coords.windfarm[,1])
   coords.windfarm[,2] <- as.numeric(as.character(coords.windfarm[,2]))
   coords.windfarm[,3] <- as.numeric(as.character(coords.windfarm[,3]))
@@ -93,8 +93,8 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   }
   coords.windfarm <- coords.windfarm[locat.aux,]
   rm(locat.aux,l)
-  coords.ETACE <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/coords_Eta5km_operacional_CE.csv")
-  # prevnumext <- read.csv("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/dados_parajuru/previsoes_numericas_parajuru_20170102_20171229.csv")
+  coords.ETACE <- read.csv("C:/Users/b207056565/Desktop//Wind_Speed_100mCE/coords_Eta5km_operacional_CE.csv")
+  # prevnumext <- read.csv("C:/Users/b207056565/Desktop//Wind_Speed_100mCE/dados_parajuru/previsoes_numericas_parajuru_20170102_20171229.csv")
   # prevnumext$runtime1 <- strptime(paste0(substr(as.character(prevnumext$runtime1),1,4),"-",
   #                                        substr(as.character(prevnumext$runtime1),5,6),"-",
   #                                        substr(as.character(prevnumext$runtime1),7,8)," ",
@@ -146,7 +146,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   {
     print(paste0(i,"/",length(aux.date)))
     #------ lendo .csv auxiliar ------#
-    aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/",
+    aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop//Wind_Speed_100mCE/",
                                "velvento100m_Eta5km_CE_20170929_20171231/velvento100m_Eta5km_operacional_CE_",
                                substr(aux.date[i],1,4),
                                substr(aux.date[i],6,7),
@@ -297,7 +297,7 @@ definicoes.usuario <- function(forecast.date, # data de previsao maxima
   {
     print(paste0(i,"/",length(aux.date)))
     #------ lendo .csv auxiliar ------#
-    aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_100mCE/",
+    aux.csv <- read.csv(paste0("C:/Users/b207056565/Desktop//Wind_Speed_100mCE/",
                                "velvento100m_Eta5km_CE_20170929_20171231/velvento100m_Eta5km_operacional_CE_",
                                substr(aux.date[i],1,4),
                                substr(aux.date[i],6,7),
@@ -1196,7 +1196,7 @@ previsao.posteriori <- function(Ft.k,
   for (k in 2:(T.new+1))
   {
     points(rowMedians(Yt.prev[1:n,,k]),
-           as.numeric(Yt.k[,,k]),pch=19,col=2)
+           as.numeric(Yt.k[,,k]),pch=19,col=4)
   }
   abline(v=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
          h=0:ceiling(max(as.numeric(Yt.k[,,2:(T.new+1)]),na.rm=T)),
