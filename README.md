@@ -1,4 +1,4 @@
-# Calibração Espaço-Temporal de Previsões Numéricas do Modelo de Mesoescala Eta para a Velocidade do Vento em Minas Gerais.
+# Calibração Espaço-temporal de Previsões Numéricas do Modelo de Mesoescala Eta para a Velocidade do Vento em Minas Gerais.
 **Disponível em http://www.pg.im.ufrj.br/teses/Estatistica/Mestrado/170.pdf.**
 
 # Resumo
