@@ -400,9 +400,11 @@ names(AUX2) <- paste0("+",seq(96,240,24),"h")
 M <- cor(AUX2)
 
 corrplot::corrplot(M, method = "color", type = "lower", diag = FALSE,
-                   addCoef.col = "black", col = c(rep("#E6E6E6rev", 10),rev(grey.colors(10))),
-                   tl.col = "black", tl.srt = 0, tl.cex = 1.2, tl.offset = .5,
-                   cl.cex = 1.2, cl.lim = c(.5,1))
+                   addCoef.col = "black", 
+                   col = c(rep("#E6E6E6rev", 10),rev(grey.colors(10))),
+                   tl.col = "black", tl.srt = 0, tl.cex = 1.1, tl.offset = .8,
+                   cl.cex = 1.1, cl.lim = c(.5,1))
+rect(.5, .5, 6.5, 7.5)
 
 rm(list = ls())
 
