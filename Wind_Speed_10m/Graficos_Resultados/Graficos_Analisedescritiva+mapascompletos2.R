@@ -1,24 +1,17 @@
-##############################################################################
-##############################################################################
-##########|-------------------------------------------------------|###########
-##########|-------------------------------------------------------|###########
-##########|     UNIVERSIDADE FEDERAL DO RIO DE JANEIRO - UFRJ     |###########
-##########|               INSTITUTO DE MATEMATICA - IM            |###########
-##########|      DEPARTAMENTO DE METODOS ESTATISTICOS - DME       |###########
-##########|-------------------------------------------------------|###########
-##########|            ORIENTADORA: THAIS C. O. FONSECA           |###########
-##########|           ORIENTADORA: KELLY C. M. GONCALVES          |###########
-##########|              ALUNO: LUIZ EDUARDO S. GOMES             |###########
-##########|-------------------------------------------------------|###########
-##########|       CALIBRACAO DINAMICA DE PREVISOES NUMERICAS      |###########
-##########|                  ANALISE DESCRITIVA                   |###########
-##########|-------------------------------------------------------|###########
-##########|-------------------------------------------------------|###########
-##############################################################################
-##############################################################################
+# --------------------------------------------------------- #
+# |     UNIVERSIDADE FEDERAL DO RIO DE JANEIRO - UFRJ     | #
+# |               INSTITUTO DE MATEMATICA - IM            | #
+# |      DEPARTAMENTO DE METODOS ESTATISTICOS - DME       | #
+# |-------------------------------------------------------| #
+# |            ORIENTADORA: THAIS C. O. FONSECA           | #
+# |           ORIENTADORA: KELLY C. M. GONCALVES          | #
+# |              ALUNO: LUIZ EDUARDO S. GOMES             | #
+# |-------------------------------------------------------| #
+# |       CALIBRACAO DINAMICA DE PREVISOES NUMERICAS      | #
+# |               CRITERIOS DE COMPARACAO                 | #
+# |-------------------------------------------------------| #
 
-#------------------------------------------ PACOTES -------------------------------------------
-
+# PACOTES ----
 pacotes<-c("mvtnorm","forecast","coda","matrixStats",
            "corpcor","truncnorm","Matrix","akima",
            "Rcpp","Rcpp11","RcppArmadillo",
@@ -33,9 +26,7 @@ for (i in 1:length(pacotes))
 }
 rm(i,pacotes)
 
-#----------------------------------------------------------------------------------------------
-# GRAFICO - FAC
-#----------------------------------------------------------------------------------------------
+# GRAFICO - FAC ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
@@ -151,9 +142,7 @@ for (i in 1:n)
 
 rm(list = ls())
 
-#----------------------------------------------------------------------------------------------
-# GRAFICO - HISTOGRAMA
-#----------------------------------------------------------------------------------------------
+# GRAFICO - HISTOGRAMA ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
@@ -249,9 +238,7 @@ for (i in 1:n)
 
 rm(list = ls())
 
-#----------------------------------------------------------------------------------------------
-# GRAFICO - ST (comparativos)
-#----------------------------------------------------------------------------------------------
+# GRAFICO - ST (comparativos) ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
@@ -380,9 +367,7 @@ for (i in 1:n)
 
 rm(list = ls())
 
-#----------------------------------------------------------------------------------------------
-# CORRELACAO DO ENSEMBLE
-#----------------------------------------------------------------------------------------------
+# CORRELACAO DO ENSEMBLE ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
@@ -429,9 +414,7 @@ rect(.5, .5, 6.5, 7.5)
 
 rm(list = ls())
 
-#----------------------------------------------------------------------------------------------
-# BOX PLOT HORARIO
-#----------------------------------------------------------------------------------------------
+# BOX PLOT HORARIO ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
@@ -456,9 +439,7 @@ boxplot(AUX,outline = F,col="grey80",
         cex.lab=1.5,cex.axis=2.5)
 rm(list = ls())
 
-#----------------------------------------------------------------------------------------------
-# GRAFICO - INTERPOLACAO BILINEAR
-#----------------------------------------------------------------------------------------------
+# GRAFICO - INTERPOLACAO BILINEAR ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
@@ -556,9 +537,7 @@ text(x = coords.stations[,2],y = coords.stations[,3],
 
 rm(list = ls())
 
-#----------------------------------------------------------------------------------------------
-# GRAFICO - LOCALIZACOES, MAPAS DE PREVISAO
-#----------------------------------------------------------------------------------------------
+# GRAFICO - LOCALIZACOES, MAPAS DE PREVISAO ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
@@ -675,134 +654,274 @@ df.graf <- data.frame(longitude = gradeMG$longitude,
                                                        xo = gradeMG$longitude,
                                                        yo = gradeMG$latitude)$z))
 
-#------ Criando SPDF ------#
-df.graf2 <- df.graf
-coordinates(df.graf2) = c("longitude", "latitude") # promote to SpatialPointsDataFrame
-gridded(df.graf2) <- TRUE # promote to SpatialPixelsDataFrame
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_ETA18.eps'),
+           width = 8, height = 6)
 
-plot(df.graf2["hora18"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="20/07/2015 18:00")
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA18")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora18IC1"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="20/07/2015 18:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_ETA00.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA00")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora18IC2"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="20/07/2015 18:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_ETA06.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA06")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora18ME"],
-     col= colorRampPalette(brewer.pal(5,"BuPu"))(10),
-     zlim = c(0,5),
-     main="20/07/2015 18:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_ETA12.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA12")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora00"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 00:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora18.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora18")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora00IC1"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 00:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora00.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora00")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora00IC2"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 00:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora06.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora06")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora00ME"],
-     col= colorRampPalette(brewer.pal(5,"BuPu"))(10),
-     zlim = c(0,5),
-     main="21/07/2015 00:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora12.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora12")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 9),
+             breaks = seq(0, 9, .5),
+             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 9, 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora06"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 06:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora18ME.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora18ME")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 5),
+             breaks = seq(0, 5, .5),
+             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 5, 1), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora06IC1"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 06:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora00ME.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora00ME")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 5),
+             breaks = seq(0, 5, .5),
+             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 5, 1), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora06IC2"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 06:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora06ME.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora06ME")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 5),
+             breaks = seq(0, 5, .5),
+             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 5, 1), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora06ME"],
-     col= colorRampPalette(brewer.pal(5,"BuPu"))(10),
-     zlim = c(0,5),
-     main="21/07/2015 06:00")
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora12ME.eps'),
+           width = 8, height = 6)
+
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora12ME")])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0, 5),
+             breaks = seq(0, 5, .5),
+             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, 5, 1), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
 lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
-plot(df.graf2["hora12"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 12:00")
-lines(coords.MG)
+dev.off()
 
-plot(df.graf2["hora12IC1"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 12:00")
-lines(coords.MG)
+rm(list = ls())
 
-plot(df.graf2["hora12IC2"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 12:00")
-lines(coords.MG)
+# GRAFICO - LOCALIZACOES GOOGLE MAPS ----
 
-plot(df.graf2["hora12ME"],
-     col= colorRampPalette(brewer.pal(5,"BuPu"))(10),
-     zlim = c(0,5),
-     main="21/07/2015 12:00")
-lines(coords.MG)
-
-plot(df.graf2["ETA18"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="20/07/2015 18:00")
-lines(coords.MG)
-
-plot(df.graf2["ETA00"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 00:00")
-lines(coords.MG)
-
-plot(df.graf2["ETA06"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 06:00")
-lines(coords.MG)
-
-plot(df.graf2["ETA12"],
-     col= colorRampPalette(brewer.pal(9,"YlGnBu"))(18),
-     zlim = c(0,9),
-     main="21/07/2015 12:00")
-lines(coords.MG)
-
-#----------------------------------------------------------------------------------------------
-# GRAFICO - LOCALIZACOES GOOGLE MAPS
-#----------------------------------------------------------------------------------------------
 library(ggmap,RgoogleMaps,scales)
 
 datas <- seq(as.Date("2015-12-21"),
@@ -865,7 +984,7 @@ mapPoints +
                 y = latitude-.2,
                 label = codigo), size = 2.5,data = coords.stations)
 
-###################################################################
+##
 
 map <-
   get_map(location = c(lon = -44.80567, lat = -18.4764), zoom = 6,
@@ -891,7 +1010,7 @@ mapPoints +
                 y = latitude-.2,
                 label = codigo), size = 2.5,data = coords.stations)
 
-###################################################################
+###
 
 map <-
   get_map(location = c(lon = -44.80567, lat = -18.4764), zoom = 6,
@@ -917,7 +1036,7 @@ mapPoints +
                 y = latitude-.2,
                 label = codigo), size = 2.5,data = coords.stations)
 
-###################################################################
+###
 
 map <-
   get_map(location = c(lon = -44.80567, lat = -18.4764), zoom = 6,
@@ -943,11 +1062,9 @@ mapPoints +
                 y = latitude-.2,
                 label = codigo), size = 2.5,data = coords.stations)
 
-###################################################################
+###
 
-#----------------------------------------------------------------------------------------------
-# GRAFICO -  MAPAS DE PREVISAO RGOOGLEMAPS
-#----------------------------------------------------------------------------------------------
+# GRAFICO -  MAPAS DE PREVISAO RGOOGLEMAPS ----
 
 datas <- seq(as.Date("2015-12-21"),
              as.Date("2016-11-21"),
