@@ -662,8 +662,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA18")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -684,8 +684,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA00")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -706,8 +706,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA06")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -728,8 +728,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "ETA12")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -750,8 +750,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora18")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -772,8 +772,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora00")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -794,8 +794,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora06")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -816,8 +816,8 @@ par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora12")])
 raster::plot(r, axes = FALSE,  
              zlim = c(0, 9),
-             breaks = seq(0, 9, .5),
-             col = colorRampPalette(brewer.pal(9,"Greys"))(18),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
              axis.args = list(at = seq(0, 9, 2), 
@@ -837,12 +837,12 @@ postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_1
 par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora18ME")])
 raster::plot(r, axes = FALSE,  
-             zlim = c(0, 5),
-             breaks = seq(0, 5, .5),
-             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             zlim = c(0, 9),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
-             axis.args = list(at = seq(0, 5, 1), 
+             axis.args = list(at = seq(0, 9, 2), 
                               cex.axis = 1.8))
 box(col = 'white', lwd = 3)
 # plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
@@ -859,12 +859,12 @@ postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_1
 par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora00ME")])
 raster::plot(r, axes = FALSE,  
-             zlim = c(0, 5),
-             breaks = seq(0, 5, .5),
-             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             zlim = c(0, 9),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
-             axis.args = list(at = seq(0, 5, 1), 
+             axis.args = list(at = seq(0, 9, 2), 
                               cex.axis = 1.8))
 box(col = 'white', lwd = 3)
 # plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
@@ -881,12 +881,12 @@ postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_1
 par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora06ME")])
 raster::plot(r, axes = FALSE,  
-             zlim = c(0, 5),
-             breaks = seq(0, 5, .5),
-             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             zlim = c(0, 9),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
-             axis.args = list(at = seq(0, 5, 1), 
+             axis.args = list(at = seq(0, 9, 2), 
                               cex.axis = 1.8))
 box(col = 'white', lwd = 3)
 # plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
@@ -903,12 +903,12 @@ postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_1
 par(mar=c(4.5, 4.5, .5, .5))
 r <- raster::rasterFromXYZ(df.graf[, c("longitude", "latitude", "hora12ME")])
 raster::plot(r, axes = FALSE,  
-             zlim = c(0, 5),
-             breaks = seq(0, 5, .5),
-             col = rev(colorRampPalette(brewer.pal(5,"Greys"))(10)),
+             zlim = c(0, 9),
+             breaks = seq(0, 9, 1),
+             col = brewer.pal(9,"Greys"),
              xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
              legend.width = 1.5, legend.shrink = 1, 
-             axis.args = list(at = seq(0, 5, 1), 
+             axis.args = list(at = seq(0, 9, 2), 
                               cex.axis = 1.8))
 box(col = 'white', lwd = 3)
 # plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
