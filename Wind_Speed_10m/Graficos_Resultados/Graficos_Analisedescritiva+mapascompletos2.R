@@ -742,8 +742,12 @@ axis(2,seq(-22,-16,2), cex.axis = 1.8)
 
 dev.off()
 
-postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
-                  'cap4_mapas_hora18.eps'),
+# postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+#                   'cap4_mapas_hora18.eps'),
+#            width = 8, height = 6)
+
+pdf(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Mapas/',
+                  'cap4_mapas_hora18.pdf'),
            width = 8, height = 6)
 
 par(mar=c(4.5, 4.5, .5, .5))
