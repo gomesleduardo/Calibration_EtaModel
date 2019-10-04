@@ -22,7 +22,7 @@
 pacotes<-c("mvtnorm","forecast","coda","matrixStats",
            "corpcor","truncnorm","Matrix","akima",
            "Rcpp","Rcpp11","RcppArmadillo",
-           "geoR","adaptMCMC","tmvtnorm",
+           "geoR","adaptMCMC","tmvtnorm", "fields", "raster",
            "sp","colorRamps","RColorBrewer")
 
 for (i in 1:length(pacotes))
@@ -47,25 +47,24 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ FAC ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-# par(mar=c(4.5,4.5,.5,.5))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/FAC/",
-                        "cap1_FAC_",as.character(coords.stations$codigo[i]),
-                        "verao.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
-  # plot(0,type="n",ylim=c(-.5,1),
-  #      xlim=c(1,120),
-  #      ylab="FAC",xlab="Defasagem (h)", axes= F,cex.lab=2.5)
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/FAC/",
+                    "cap1_FAC_",as.character(coords.stations$codigo[i]),
+                    "verao.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(-.5,1),
-       xlim=c(1,120),
-       ylab="FAC",xlab="Defasagem (h)", axes= F,cex.lab=3.5)
+       xlim=c(0,120),
+       ylab="FAC",
+       xlab="Defasagem (h)", 
+       axes= F, cex.lab = 2.5)
   axis(1,seq(0,120,24),seq(0,120,24),cex.axis=2.5)
   axis(2,cex.axis=2.5)
-  abline(v=seq(0,120,24),col="gray80",lty=2)
   points(0:120,as.numeric(acf(Yt[i,,-1],lag.max = 120,plot=F)[[1]]),type="h",lwd=2)
+  
   dev.off()
 }
 
@@ -75,22 +74,24 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ FAC ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-# par(mar=c(6.5, 5.5, .5, 1))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/FAC/",
-                        "cap1_FAC_",as.character(coords.stations$codigo[i]),
-                        "outono.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/FAC/",
+                    "cap1_FAC_",as.character(coords.stations$codigo[i]),
+                    "outono.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(-.5,1),
-       xlim=c(1,120),
-       ylab="FAC",xlab="Defasagem (h)", axes= F,cex.lab=2.5)
+       xlim=c(0,120),
+       ylab="FAC",
+       xlab="Defasagem (h)", 
+       axes= F, cex.lab = 2.5)
   axis(1,seq(0,120,24),seq(0,120,24),cex.axis=2.5)
   axis(2,cex.axis=2.5)
-  abline(v=seq(0,120,24),col="gray80",lty=2)
   points(0:120,as.numeric(acf(Yt[i,,-1],lag.max = 120,plot=F)[[1]]),type="h",lwd=2)
+  
   dev.off()
 }
 
@@ -100,22 +101,24 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ FAC ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-# par(mar=c(6.5, 5.5, .5, 1))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/FAC/",
-                        "cap1_FAC_",as.character(coords.stations$codigo[i]),
-                        "inverno.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/FAC/",
+                    "cap1_FAC_",as.character(coords.stations$codigo[i]),
+                    "inverno.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(-.5,1),
-       xlim=c(1,120),
-       ylab="FAC",xlab="Defasagem (h)", axes= F,cex.lab=2.5)
+       xlim=c(0,120),
+       ylab="FAC",
+       xlab="Defasagem (h)", 
+       axes= F, cex.lab = 2.5)
   axis(1,seq(0,120,24),seq(0,120,24),cex.axis=2.5)
   axis(2,cex.axis=2.5)
-  abline(v=seq(0,120,24),col="gray80",lty=2)
   points(0:120,as.numeric(acf(Yt[i,,-1],lag.max = 120,plot=F)[[1]]),type="h",lwd=2)
+  
   dev.off()
 }
 
@@ -125,22 +128,24 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ FAC ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-# par(mar=c(6.5, 5.5, .5, 1))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/FAC/",
-                        "cap1_FAC_",as.character(coords.stations$codigo[i]),
-                        "primavera.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/FAC/",
+                    "cap1_FAC_",as.character(coords.stations$codigo[i]),
+                    "primavera.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(-.5,1),
-       xlim=c(1,120),
-       ylab="FAC",xlab="Defasagem (h)", axes= F,cex.lab=2.5)
+       xlim=c(0,120),
+       ylab="FAC",
+       xlab="Defasagem (h)", 
+       axes= F, cex.lab = 2.5)
   axis(1,seq(0,120,24),seq(0,120,24),cex.axis=2.5)
   axis(2,cex.axis=2.5)
-  abline(v=seq(0,120,24),col="gray80",lty=2)
   points(0:120,as.numeric(acf(Yt[i,,-1],lag.max = 120,plot=F)[[1]]),type="h",lwd=2)
+  
   dev.off()
 }
 
@@ -160,19 +165,19 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ Histograma ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-par(mar=c(4.5,4.5,.5,.5))
-
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/Histograma/",
-                        "cap1_histo_",as.character(coords.stations$codigo[i]),
-                        "verao.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, .5))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Histograma/",
+                    "cap1_histo_",as.character(coords.stations$codigo[i]),
+                    "verao.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   hist(Yt[i,,-1],freq = F,main="",ylab="Densidade",
-       xlab="Velocidade do Vento (m/s)",col="grey80",ylim=c(0,.8),
+       xlab="Vel. do Vento (m/s)",col="grey80",ylim=c(0,.8),
        cex.axis=2.5,cex.lab=2.5,lwd=2,xlim=c(0,12))
+  
   dev.off()
 }
 
@@ -182,18 +187,19 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ Histograma ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-par(mar=c(6.5, 5.5, .5, .5))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/Histograma/",
-                        "cap1_histo_",as.character(coords.stations$codigo[i]),
-                        "outono.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, .5))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Histograma/",
+                    "cap1_histo_",as.character(coords.stations$codigo[i]),
+                    "outono.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   hist(Yt[i,,-1],freq = F,main="",ylab="Densidade",
-       xlab="Velocidade do Vento (m/s)",col="grey80",ylim=c(0,.8),
+       xlab="Vel. do Vento (m/s)",col="grey80",ylim=c(0,.8),
        cex.axis=2.5,cex.lab=2.5,lwd=2,xlim=c(0,12))
+  
   dev.off()
 }
 
@@ -203,18 +209,19 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ Histograma ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-par(mar=c(6.5, 5.5, .5, .5))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/Histograma/",
-                        "cap1_histo_",as.character(coords.stations$codigo[i]),
-                        "inverno.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, .5))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Histograma/",
+                    "cap1_histo_",as.character(coords.stations$codigo[i]),
+                    "inverno.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   hist(Yt[i,,-1],freq = F,main="",ylab="Densidade",
-       xlab="Velocidade do Vento (m/s)",col="grey80",ylim=c(0,.8),
+       xlab="Vel. do Vento (m/s)",col="grey80",ylim=c(0,.8),
        cex.axis=2.5,cex.lab=2.5,lwd=2,xlim=c(0,12))
+  
   dev.off()
 }
 
@@ -224,18 +231,19 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ Histograma ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-par(mar=c(6.5, 5.5, .5, .5))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/Histograma/",
-                        "cap1_histo_",as.character(coords.stations$codigo[i]),
-                        "primavera.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, .5))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/Histograma/",
+                    "cap1_histo_",as.character(coords.stations$codigo[i]),
+                    "primavera.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   hist(Yt[i,,-1],freq = F,main="",ylab="Densidade",
-       xlab="Velocidade do Vento (m/s)",col="grey80",ylim=c(0,.8),
+       xlab="Vel. do Vento (m/s)",col="grey80",ylim=c(0,.8),
        cex.axis=2.5,cex.lab=2.5,lwd=2,xlim=c(0,12))
+  
   dev.off()
 }
 
@@ -255,24 +263,32 @@ load(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Apl
 
 #------ ST ------#
 Yt <- ifelse(Yt<.1,0,Yt)
-par(mar=c(6.5, 5.5, .5, 1))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/ST/",
-                        "cap1_ST_",as.character(coords.stations$codigo[i]),
-                        "verao.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/ST/",
+                    "cap1_ST_",as.character(coords.stations$codigo[i]),
+                    "verao.eps"),
+             width = 8, height = 6)
+
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(0,9),
        xlim=c(0,120),
-       ylab="Velocidade do Vento (m/s)",
-       xlab="Horizonte (h)", axes= F,cex.lab=2.5)
+       ylab="Vel. do Vento (m/s)",
+       xlab="Horizonte (h)", axes = F,cex.lab = 2.5)
   axis(1,seq(0,120,24),c(0,paste0("+",seq(24,120,24))),cex.axis=2.5)
-  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=2.5)
-  abline(v=seq(0,240,24),col="grey80",lty=2)
-  lines(Yt[i,,2:121],t="l",lwd=2,col=2)
-  lines(Ft[2,i,2:121],t="l",lwd=2)
+  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=3)
+  lines(Yt[i,,2:121],t="l",lwd=2)
+  lines(Ft[2,i,2:121],t="l",lwd=2, lty = 2)
+  
+  legend("topleft",
+         legend = c("Obs.", 
+                    "Eta"), 
+         lwd = c(2, 2),
+         lty = c(1, 2),
+         horiz = TRUE,
+         cex = 2.2)
+  
   dev.off()
 }
 
@@ -285,21 +301,23 @@ Yt <- ifelse(Yt<.1,0,Yt)
 par(mar=c(6.5, 5.5, .5, 1))
 for (i in 1:n)
 {
+  
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/ST/",
-                        "cap1_ST_",as.character(coords.stations$codigo[i]),
-                        "outono.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/ST/",
+                    "cap1_ST_",as.character(coords.stations$codigo[i]),
+                    "outono.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(0,9),
        xlim=c(0,120),
-       ylab="Velocidade do Vento (m/s)",
-       xlab="Horizonte (h)", axes= F,cex.lab=2.5)
+       ylab="Vel. do Vento (m/s)",
+       xlab="Horizonte (h)", axes = F,cex.lab = 2.5)
   axis(1,seq(0,120,24),c(0,paste0("+",seq(24,120,24))),cex.axis=2.5)
-  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=2.5)
-  abline(v=seq(0,240,24),col="grey80",lty=2)
-  lines(Yt[i,,2:121],t="l",lwd=2,col=2)
-  lines(Ft[2,i,2:121],t="l",lwd=2)
+  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=3)
+  lines(Yt[i,,2:121],t="l",lwd=2)
+  lines(Ft[2,i,2:121],t="l",lwd=2, lty = 2)
+
   dev.off()
 }
 
@@ -313,20 +331,21 @@ par(mar=c(6.5, 5.5, .5, 1))
 for (i in 1:n)
 {
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/ST/",
-                        "cap1_ST_",as.character(coords.stations$codigo[i]),
-                        "inverno.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/ST/",
+                    "cap1_ST_",as.character(coords.stations$codigo[i]),
+                    "inverno.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(0,9),
        xlim=c(0,120),
-       ylab="Velocidade do Vento (m/s)",
-       xlab="Horizonte (h)", axes= F,cex.lab=2.5)
+       ylab="Vel. do Vento (m/s)",
+       xlab="Horizonte (h)", axes = F,cex.lab = 2.5)
   axis(1,seq(0,120,24),c(0,paste0("+",seq(24,120,24))),cex.axis=2.5)
-  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=2.5)
-  abline(v=seq(0,240,24),col="grey80",lty=2)
-  lines(Yt[i,,2:121],t="l",lwd=2,col=2)
-  lines(Ft[2,i,2:121],t="l",lwd=2)
+  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=3)
+  lines(Yt[i,,2:121],t="l",lwd=2)
+  lines(Ft[2,i,2:121],t="l",lwd=2, lty = 2)
+  
   dev.off()
 }
 
@@ -339,21 +358,23 @@ Yt <- ifelse(Yt<.1,0,Yt)
 par(mar=c(6.5, 5.5, .5, 1))
 for (i in 1:n)
 {
+
   print(i)
-  png(filename = paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Graficos_Resultados/ST/",
-                        "cap1_ST_",as.character(coords.stations$codigo[i]),
-                        "primavera.png"),
-      width = 640, height = 480)
-  par(mar=c(6.5, 5.5, .5, 1))
+  postscript(paste0("C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/ST/",
+                    "cap1_ST_",as.character(coords.stations$codigo[i]),
+                    "primavera.eps"),
+             width = 8, height = 6)
+  
+  par(mar=c(5, 5, .5, 2))
   plot(0,type="n",ylim=c(0,9),
        xlim=c(0,120),
-       ylab="Velocidade do Vento (m/s)",
-       xlab="Horizonte (h)", axes= F,cex.lab=2.5)
+       ylab="Vel. do Vento (m/s)",
+       xlab="Horizonte (h)", axes = F,cex.lab = 2.5)
   axis(1,seq(0,120,24),c(0,paste0("+",seq(24,120,24))),cex.axis=2.5)
-  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=2.5)
-  abline(v=seq(0,240,24),col="grey80",lty=2)
-  lines(Yt[i,,2:121],t="l",lwd=2,col=2)
-  lines(Ft[2,i,2:121],t="l",lwd=2)
+  axis(2,seq(0,9,3),seq(0,9,3),cex.axis=3)
+  lines(Yt[i,,2:121],t="l",lwd=2)
+  lines(Ft[2,i,2:121],t="l",lwd=2, lty = 2)
+  
   dev.off()
 }
 
@@ -464,16 +485,6 @@ df.graf2 <- df.graf
 coordinates(df.graf2) = c("longitude", "latitude") # promote to SpatialPointsDataFrame
 gridded(df.graf2) <- TRUE # promote to SpatialPixelsDataFrame
 
-#------ Exemplo de Previsao Numerica ------#
-plot(df.graf2["prevnum"],
-     col= rev(grey.colors(ceiling(max(df.graf$prevnum)))),
-     zlim = c(0,ceiling(max(df.graf$prevnum))),
-     main="")
-# plot(geometry(df.graf2), add = TRUE, col = grey(.1))
-lines(coords.MG)
-
-
-
 #------ Ajustando DF ------#
 df.graf3 <- data.frame(longitude = gradeMG$longitude,
                        latitude = gradeMG$latitude,
@@ -484,16 +495,51 @@ df.graf4 <- df.graf3
 coordinates(df.graf4) = c("longitude", "latitude") # promote to SpatialPointsDataFrame
 gridded(df.graf4) <- TRUE # promote to SpatialPixelsDataFrame
 
-#------ Exemplo de Previsao Numerica ------#
-plot(df.graf4["previnterpbil"],
-     col= rev(grey.colors((ceiling(max(df.graf3$previnterpbil))))),
-     zlim = c(0,ceiling(max(df.graf3$previnterpbil))), cex = 5,
-     main="", axes = FALSE, axis.pos = 4, pt.cex = 6)
-legend("right",legend = c(1:5))
-lines(coords.MG)
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/',
+                  'cap1_prevnumA.eps'),
+           width = 8, height = 6)
 
-spplot(df.graf4["previnterpbil"], 
-       col.regions = rev(grey.colors((ceiling(max(df.graf3$previnterpbil))))))
+#------ Exemplo de Previsao Numerica ------#
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf[, c(1:3)])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0,ceiling(max(df.graf$prevnum))),
+             breaks = seq(0, ceiling(max(df.graf$prevnum)), 1),
+             col = brewer.pal(ceiling(max(df.graf$prevnum)),"Greys"),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, ceiling(max(df.graf$prevnum)), 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+plot(geometry(df.graf2), add = TRUE, col = grey(0), lwd = .01, lty = 2)
+lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
+
+dev.off()
+
+postscript(paste0('C:/Users/b207056565/Desktop/Calibration_EtaModel/Wind_Speed_10m/Graficos_Resultados/',
+                  'cap1_prevnumB.eps'),
+           width = 8, height = 6)
+
+#------ Exemplo de Previsao Numerica ------#
+par(mar=c(4.5, 4.5, .5, .5))
+r <- raster::rasterFromXYZ(df.graf3[, c(1:3)])
+raster::plot(r, axes = FALSE,  
+             zlim = c(0,ceiling(max(df.graf3$previnterpbil))),
+             breaks = seq(0, ceiling(max(df.graf3$previnterpbil)), 1),
+             col = brewer.pal(ceiling(max(df.graf3$previnterpbil)),"Greys"),
+             xlab = "Longitude", ylab = "Latitude", cex.lab = 1.8,
+             legend.width = 1.5, legend.shrink = 1, 
+             axis.args = list(at = seq(0, ceiling(max(df.graf3$previnterpbil)), 2), 
+                              cex.axis = 1.8))
+box(col = 'white', lwd = 3)
+# plot(geometry(df.graf2), add = TRUE, col = grey(0))
+lines(coords.MG)
+axis(1, seq(-50,-40,2), cex.axis = 1.8)
+axis(2,seq(-22,-16,2), cex.axis = 1.8)
+
+dev.off()
 
 #------ Localizacao das estacoes ------#
 par(mar=c(4.5,4.5,.5,.5))
