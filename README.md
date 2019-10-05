@@ -3,8 +3,8 @@
 
 # Resumo
 
-Previsões de variáveis meteorológicas provenientes de modelos numéricos estão, sistematicamente, sujeitas à erros. 
-Tais erros, devem-se à tentativa de simular deterministicamente processos termodinâmicos da atmosfera a partir de suas 
+Previsões de variáveis meteorológicas provenientes de modelos numéricos estão, sistematicamente, sujeitas a erros. 
+Tais erros devem-se à tentativa de simular deterministicamente processos termodinâmicos da atmosfera a partir de suas 
 condições correntes por meio de sistemas de equações diferenciais. Além disto, estes sistemas são solucionados em uma 
 grade discreta, apresentando previsões uniformes para toda região pertencente à mesma célula desta grade. 
 Por consequência, previsões procedentes de modelos numéricos podem não ser representativas em locais específicos (Chou *et al.*, 2007).
