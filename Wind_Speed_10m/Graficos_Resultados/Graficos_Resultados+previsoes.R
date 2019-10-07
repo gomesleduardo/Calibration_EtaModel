@@ -1991,7 +1991,7 @@ for (l in 1:59)
     points(3:(T.new+2),Yt.k[l,,2:(T.new+1)],pch=19,cex=2.5)
     lines(3:(T.new+2),colMeans(Yt.prev[l,,2:(T.new+1)]),lwd=2) #,t="o",pch="x",cex=2.5)
     
-    if (l == 8) {
+    if (l == 8 | l == 3) {
       legend("topleft", 
              legend = c("Eta", "Prev.", "Obs."), 
              horiz = TRUE, 
